@@ -2,1833 +2,247 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AiRM Fateh Drone Programming Interface</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7.24.0/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs/loader.min.js"></script>
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiRM Fateh Nano Drone: Interactive Control Platform</title>
     <style>
+        /* Embedded Tailwind CSS (subset) */
+        *, ::before, ::after { box-sizing: border-box; }
+        body { margin: 0; }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .items-center { align-items: center; }
+        .p-4 { padding: 1rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .font-bold { font-weight: 700; }
+        .rounded { border-radius: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .w-3 { width: 0.75rem; }
+        .h-3 { height: 0.75rem; }
+        .rounded-full { border-radius: 9999px; }
+        .bg-green-500 { background-color: #10b981; }
+
+        /* Custom Cyberpunk Styles */
         :root {
             --primary: #00f0ff;
             --secondary: #ff3e7f;
             --dark: #0a0a1a;
-            --darker: #050510;
         }
         body {
-            background: var(--dark);
-            font-family: 'Ubuntu Mono', monospace;
-            color: #e0e0ff;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-        .editor-font {
+            background: #000;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
+            color: #e0e0ff;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
         }
-        .interface-font {
-            font-family: 'Ubuntu Mono', monospace;
-        }
-        .cyber-card {
-            background: rgba(10, 10, 26, 0.9);
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-            transition: all 0.3s ease;
+        .canvas {
             position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
             overflow: hidden;
         }
-        .cyber-card::before {
-            content: '';
+        .grid {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-        .cyber-button {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .cyber-button:hover {
-            background: rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 8px var(--primary);
-        }
-        .delete-button {
-            background: rgba(255, 62, 127, 0.1);
-            color: var(--secondary);
-            border: 1px solid var(--secondary);
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-        .delete-button:hover {
-            background: rgba(255, 62, 127, 0.2);
-            box-shadow: 0 0 8px var(--secondary);
-        }
-        .add-button {
-            background: rgba(0, 255, 128, 0.1);
-            color: #00ff80;
-            border: 1px solid #00ff80;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-        .add-button:hover {
-            background: rgba(0, 255, 128, 0.2);
-            box-shadow: 0 0 8px #00ff80;
-        }
-        .status-active {
-            background: var(--primary);
-            box-shadow: 0 0 8px var(--primary);
-        }
-        .hologram-container {
             width: 100%;
-            height: 200px;
-            position: relative;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .scrollable-container {
-            overflow-y: auto;
-            max-height: calc(100vh - 200px);
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--dark);
-        }
-        .scrollable-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .scrollable-container::-webkit-scrollbar-track {
-            background: var(--dark);
-        }
-        .scrollable-container::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
-            border-radius: 3px;
-        }
-        @media (max-height: 800px) {
-            .scrollable-container {
-                max-height: calc(100vh - 150px);
-            }
-        }
-        .tab-active {
-            background: rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 8px var(--primary);
-        }
-        .completed-badge {
-            background: rgba(0, 255, 128, 0.2);
-            color: #00ff80;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-        }
-        .dynamic-height {
-            height: calc(100vh - 180px);
-            min-height: 500px;
-        }
-        .input-field {
-            background: rgba(0, 0, 0, 0.8);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            border-radius: 4px;
-            padding: 4px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            width: 100%;
-        }
-        .input-field:focus {
-            outline: none;
-            box-shadow: 0 0 8px var(--primary);
-        }
-        .progress-bar {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--primary);
-            border-radius: 4px;
-            height: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        .progress-fill {
-            background: var(--primary);
             height: 100%;
-            transition: width 0.3s ease;
+            background-image: linear-gradient(to right, rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+            background-size: 10px 10px;
+            pointer-events: none;
         }
-        .progress-text {
+        .block {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #000;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-        }
-        .telemetry-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .telemetry-table th, .telemetry-table td {
-            border: 1px solid var(--primary);
-            padding: 6px;
-            text-align: center;
-        }
-        .telemetry-table th {
-            background: rgba(0, 240, 255, 0.2);
-        }
-        .warning-message {
-            background: rgba(255, 62, 127, 0.2);
-            border: 1px solid var(--secondary);
-            border-radius: 4px;
-            padding: 8px;
-            margin: 8px 0;
-            color: var(--secondary);
-            font-size: 12px;
-        }
-        .report-card {
-            background: rgba(10, 10, 26, 0.9);
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            padding: 8px;
-            margin-top: 8px;
-            font-size: 12px;
-        }
-        .error-message {
-            background: rgba(255, 62, 127, 0.2);
-            border: 1px solid var(--secondary);
-            border-radius: 4px;
-            padding: 8px;
-            margin: 8px 0;
-            color: var(--secondary);
-            font-size: 12px;
-            text-align: center;
-        }
-        details summary {
-            cursor: pointer;
-            padding: 4px;
+            width: 200px;
+            height: 150px;
             background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--primary);
-            border-radius: 4px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
             color: var(--primary);
+            padding: 10px;
+            cursor: move;
+            transition: transform 0.2s ease;
+            user-select: none;
+            touch-action: none;
+        }
+        .block:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.7);
+        }
+        .block.active {
+            z-index: 100;
+            border-color: var(--secondary);
+            box-shadow: 0 0 25px rgba(255, 62, 127, 0.7);
+        }
+        .block button {
+            background: rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 4px;
             font-family: 'Share Tech Mono', monospace;
             font-size: 12px;
+            cursor: pointer;
         }
-        details summary:hover {
-            background: rgba(0, 240, 255, 0.2);
+        .block button:hover {
+            background: rgba(0, 240, 255, 0.3);
         }
-        details[open] summary {
-            background: rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 8px var(--primary);
-        }
-        .telemetry-chart {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--primary);
-            border-radius: 4px;
-            padding: 8px;
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/interactjs@1.10.27/dist/interact.min.js"></script>
 </head>
 <body>
-    <div id="root" className="min-h-screen"></div>
+    <div class="header p-4 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl" style="color: var(--primary);">AiRM FATEH NANO DRONE</h1>
+            <h2 class="text-lg" style="color: var(--secondary);">INTERACTIVE CONTROL PLATFORM</h2>
+        </div>
+        <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full mr-2 bg-green-500"></div>
+            <span class="text-sm">Connected</span>
+        </div>
+    </div>
+    <div class="canvas">
+        <div class="grid"></div>
+        <div class="block" data-id="pid" style="left: 50px; top: 100px;">
+            <h3 class="text-sm font-bold">PID Controller</h3>
+            <p class="text-xs">Status: Active</p>
+            <p class="text-xs">Gains: kp=1.0, ki=0.04</p>
+            <button onclick="toggleModule('pid')">Toggle</button>
+        </div>
+        <div class="block" data-id="telemetry" style="left: 300px; top: 100px;">
+            <h3 class="text-sm font-bold">Telemetry</h3>
+            <p class="text-xs">Status: Active</p>
+            <p class="text-xs">Altitude: 0.5m</p>
+            <button onclick="toggleModule('telemetry')">Toggle</button>
+        </div>
+        <div class="block" data-id="navigation" style="left: 550px; top: 100px;">
+            <h3 class="text-sm font-bold">Navigation</h3>
+            <p class="text-xs">Status: Inactive</p>
+            <p class="text-xs">Waypoints: 0</p>
+            <button onclick="toggleModule('navigation')">Toggle</button>
+        </div>
+        <div class="block" data-id="command" style="left: 50px; top: 300px;">
+            <h3 class="text-sm font-bold">Command Parser</h3>
+            <p class="text-xs">Status: Active</p>
+            <p class="text-xs">Last Cmd: Hover</p>
+            <button onclick="toggleModule('command')">Toggle</button>
+        </div>
+        <div class="block" data-id="safety" style="left: 300px; top: 300px;">
+            <h3 class="text-sm font-bold">Safety</h3>
+            <p class="text-xs">Status: Active</p>
+            <p class="text-xs">Battery: 85%</p>
+            <button onclick="toggleModule('safety')">Toggle</button>
+        </div>
+    </div>
 
-    <script type="text/babel" data-presets="react">
-        function App() {
-            const [status, setStatus] = React.useState('Initializing...');
-            const [isSimulating, setIsSimulating] = React.useState(false);
-            const [angles, setAngles] = React.useState([0, 0, 0]);
-            const [height, setHeight] = React.useState(0);
-            const [motorSpeeds, setMotorSpeeds] = React.useState([0, 0, 0, 0]);
-            const [throttle, setThrottle] = React.useState(0);
-            const [battery, setBattery] = React.useState(100);
-            const [isArmed, setIsArmed] = React.useState(false);
-            const [simulationError, setSimulationError] = React.useState(null);
-            const [simulationWarnings, setSimulationWarnings] = React.useState([]);
-            const [stabilityReport, setStabilityReport] = React.useState(null);
-            const [activeTab, setActiveTab] = React.useState('FATEH-V1');
-            const [editorContent, setEditorContent] = React.useState('');
-            const [logicInput, setLogicInput] = React.useState('');
-            const [buildOutput, setBuildOutput] = React.useState('');
-            const [telemetryData, setTelemetryData] = React.useState([]);
-            const [challenges, setChallenges] = React.useState([
-                {
-                    id: 1,
-                    title: 'STABLE HOVER',
-                    description: 'Maintain 1m altitude for 30 seconds with roll/pitch < 5°',
-                    points: 100,
-                    criteria: { height: 1, rollMax: 5, pitchMax: 5, duration: 30 }
-                },
-                {
-                    id: 2,
-                    title: 'PRECISE ASCENT',
-                    description: 'Reach 2m altitude in 10 seconds with roll/pitch < 10°',
-                    points: 150,
-                    criteria: { height: 2, rollMax: 10, pitchMax: 10, duration: 10 }
-                },
-                {
-                    id: 3,
-                    title: 'SOFT LANDING',
-                    description: 'Land from 1m altitude smoothly with roll/pitch < 3°',
-                    points: 200,
-                    criteria: { height: 0, rollMax: 3, pitchMax: 3, duration: 15 }
+    <script>
+        // Initialize interact.js for drag-and-drop
+        interact('.block')
+            .draggable({
+                inertia: false,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true
+                    }),
+                    interact.modifiers.snap({
+                        targets: [
+                            interact.snappers.grid({ x: 10, y: 10 })
+                        ],
+                        range: Infinity,
+                        relativePoints: [{ x: 0, y: 0 }]
+                    })
+                ],
+                listeners: {
+                    move: dragMoveListener,
+                    start(event) {
+                        event.target.classList.add('active');
+                    },
+                    end(event) {
+                        event.target.classList.remove('active');
+                    }
                 }
-            ]);
-            const [userProgress, setUserProgress] = React.useState({});
-            const [leaderboard, setLeaderboard] = React.useState([]);
-            const [profileData, setProfileData] = React.useState({
-                name: '',
-                collegeName: '',
-                email: '',
-                username: '',
-                educationalBackground: ''
             });
-            const [showProfileModal, setShowProfileModal] = React.useState(false);
-            const [selectedProfiles, setSelectedProfiles] = React.useState([]);
-            const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
-            const [currentIp, setCurrentIp] = React.useState('');
-            const [droneConfig, setDroneConfig] = React.useState({
-                ip: '192.168.4.1',
-                port: 8080,
-                telemPort: 8081,
-                ssid: 'NanoDrone',
-                password: 'drone1234'
+
+        function dragMoveListener(event) {
+            const target = event.target;
+            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+            target.style.transform = `translate(${x}px, ${y}px)`;
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+        }
+
+        // Keyboard navigation
+        let selectedBlock = null;
+        document.addEventListener('keydown', (event) => {
+            if (!selectedBlock) return;
+
+            const x = parseFloat(selectedBlock.getAttribute('data-x')) || 0;
+            const y = parseFloat(selectedBlock.getAttribute('data-y')) || 0;
+            const step = 10;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                    selectedBlock.setAttribute('data-y', y - step);
+                    break;
+                case 'ArrowDown':
+                    selectedBlock.setAttribute('data-y', y + step);
+                    break;
+                case 'ArrowLeft':
+                    selectedBlock.setAttribute('data-x', x - step);
+                    break;
+                case 'ArrowRight':
+                    selectedBlock.setAttribute('data-x', x + step);
+                    break;
+            }
+
+            selectedBlock.style.transform = `translate(${selectedBlock.getAttribute('data-x')}px, ${selectedBlock.getAttribute('data-y')}px)`;
+
+            // Ensure block stays within canvas
+            const rect = selectedBlock.getBoundingClientRect();
+            const canvas = document.querySelector('.canvas').getBoundingClientRect();
+            selectedBlock.setAttribute('data-x', Math.max(0, Math.min(x, canvas.width - rect.width)));
+            selectedBlock.setAttribute('data-y', Math.max(0, Math.min(y, canvas.height - rect.height)));
+        });
+
+        // Select block on click or focus
+        document.querySelectorAll('.block').forEach(block => {
+            block.addEventListener('click', () => {
+                if (selectedBlock) selectedBlock.classList.remove('active');
+                selectedBlock = block;
+                selectedBlock.classList.add('active');
             });
-            const [isDeploying, setIsDeploying] = React.useState(false);
-            const [connectionStatus, setConnectionStatus] = React.useState('Not connected');
-            const [deployProgress, setDeployProgress] = React.useState(0);
-            const [selectedTestScenario, setSelectedTestScenario] = React.useState('');
-            const [testResult, setTestResult] = React.useState(null);
-            const [customInputs, setCustomInputs] = React.useState({
-                initialHeight: 0,
-                initialRoll: 0,
-                initialPitch: 0,
-                initialYaw: 0
+            block.addEventListener('focus', () => {
+                if (selectedBlock) selectedBlock.classList.remove('active');
+                selectedBlock = block;
+                selectedBlock.classList.add('active');
             });
-            const [showTutorial, setShowTutorial] = React.useState(false);
-
-            const containerRef = React.useRef(null);
-            const engineRef = React.useRef(null);
-            const sceneRef = React.useRef(null);
-            const cameraRef = React.useRef(null);
-            const droneGroupRef = React.useRef(null);
-            const editorRef = React.useRef(null);
-            const chartRef = React.useRef(null);
-            const telemetryIntervalRef = React.useRef(null);
-
-            // Test scenarios
-            const testScenarios = [
-                { id: 'hover', name: 'Hover at 1m', criteria: { height: 1, rollMax: 5, pitchMax: 5 } },
-                { id: 'ascent', name: 'Ascent to 2m', criteria: { height: 2, rollMax: 10, pitchMax: 10 } },
-                { id: 'yaw', name: 'Yaw 90°', criteria: { yaw: 90, rollMax: 5, pitchMax: 5 } }
-            ];
-
-            // Tutorials
-            const tutorials = [
-                {
-                    id: 1,
-                    title: 'Basic Hover',
-                    steps: [
-                        'Set PID gains for roll and pitch: kp=1.2, ki=0.05, kd=0.25',
-                        'Arm the drone using the ARM button',
-                        'Take off to 0.5m using the TAKEOFF button',
-                        'Set target height to 0.5m using set_targets'
-                    ],
-                    code: `pids[0].set_gains(1.2, 0.05, 0.25)\npids[1].set_gains(1.2, 0.05, 0.25)\n# Set targets in mode function\ntargets = [0, 0, 0, 0.5]`
-                },
-                {
-                    id: 2,
-                    title: 'PID Tuning',
-                    steps: [
-                        'Run auto-tuning to optimize PID gains',
-                        'Use the AUTOTUNE button to start the process',
-                        'Test the tuned gains by hovering at 1m',
-                        'Adjust gains manually if needed'
-                    ],
-                    code: `# Run auto-tuning via AUTOTUNE button\n# Apply tuned gains in mode function\npids[0].set_gains(tuned_kp, tuned_ki, tuned_kd)`
-                }
-            ];
-
-            // Initialize IP and load data
-            React.useEffect(() => {
-                const generateRandomIp = () => {
-                    return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
-                };
-                setCurrentIp(generateRandomIp());
-                const savedConfig = localStorage.getItem('droneConfig');
-                if (savedConfig) {
-                    setDroneConfig(JSON.parse(savedConfig));
-                }
-                const savedLeaderboard = localStorage.getItem('leaderboard');
-                if (savedLeaderboard) {
-                    setLeaderboard(JSON.parse(savedLeaderboard));
-                }
-                setStatus('Ready');
-            }, []);
-
-            // Save leaderboard to localStorage
-            React.useEffect(() => {
-                localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-            }, [leaderboard]);
-
-            const codeTemplates = {
-                'FATEH-V1': `# FATEH V1 DEFAULT CONTROL SYSTEM
-def mode(pids, throttle, angles, targets, dt):
-    motor_speed = 65535 * (throttle / 100)
-    return (motor_speed, motor_speed, motor_speed, motor_speed)`,
-                
-                'CUSTOM': `# CUSTOM DRONE CONTROL FUNCTION
-def mode(pids, throttle, angles, targets, dt):
-    kp = 1.0
-    ki = 0.05
-    kd = 0.2
-    pids[0].set_gains(kp, ki, kd)
-    pids[1].set_gains(kp, ki, kd)
-    pids[2].set_gains(kp/2, ki, kd)
-    base = max(throttle * 65535 * 0.5 / 100, 65535 * 0.25)
-    roll_corr = pids[0].update(targets[0], angles[0], dt)
-    pitch_corr = pids[1].update(targets[1], angles[1], dt)
-    yaw_corr = pids[2].update(targets[2], angles[2], dt)
-    return (
-        base + pitch_corr + roll_corr + yaw_corr,
-        base + pitch_corr - roll_corr - yaw_corr,
-        base - pitch_corr + roll_corr - yaw_corr,
-        base - pitch_corr - roll_corr + yaw_corr
-    )`,
-                
-                'CHALLENGES': `# CHALLENGE MODE TEMPLATE
-def mode(pids, throttle, angles, targets, dt):
-    kp = 1.0
-    ki = 0.05
-    kd = 0.2
-    pids[0].set_gains(kp, ki, kd)
-    pids[1].set_gains(kp, ki, kd)
-    pids[2].set_gains(kp/2, ki, kd)
-    base = max(throttle * 65535 * 0.5 / 100, 65535 * 0.25)
-    roll_corr = pids[0].update(0, angles[0], dt)
-    pitch_corr = pids[1].update(0, angles[1], dt)
-    yaw_corr = pids[2].update(0, angles[2], dt)
-    return (
-        base + pitch_corr + roll_corr + yaw_corr,
-        base + pitch_corr - roll_corr - yaw_corr,
-        base - pitch_corr + roll_corr - yaw_corr,
-        base - pitch_corr - roll_corr + yaw_corr
-    )`
-            };
-
-            // Initialize Monaco Editor
-            React.useEffect(() => {
-                const initializeEditor = async () => {
-                    try {
-                        window.require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs' } });
-                        window.require(['vs/editor/editor.main'], () => {
-                            if (editorRef.current) editorRef.current.dispose();
-                            
-                            editorRef.current = monaco.editor.create(document.getElementById('editor'), {
-                                value: codeTemplates[activeTab],
-                                language: 'python',
-                                theme: 'vs-dark',
-                                fontFamily: 'Share Tech Mono',
-                                fontSize: 14,
-                                minimap: { enabled: false },
-                                scrollBeyondLastLine: false,
-                                automaticLayout: true,
-                                suggest: { snippetsPreventQuickSuggestions: false },
-                                codeLens: true
-                            });
-                            
-                            // Add custom suggestions
-                            monaco.languages.registerCompletionItemProvider('python', {
-                                provideCompletionItems: (model, position) => {
-                                    const suggestions = [
-                                        {
-                                            label: 'pids.set_gains',
-                                            kind: monaco.languages.CompletionItemKind.Method,
-                                            insertText: 'pids[${1:index}].set_gains(${2:kp}, ${3:ki}, ${4:kd})',
-                                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                                            documentation: 'Set PID gains for roll, pitch, or yaw'
-                                        },
-                                        {
-                                            label: 'targets',
-                                            kind: monaco.languages.CompletionItemKind.Variable,
-                                            insertText: 'targets',
-                                            documentation: 'Array of target angles and height [roll, pitch, yaw, height]'
-                                        }
-                                    ];
-                                    return { suggestions };
-                                }
-                            });
-
-                            editorRef.current.onDidChangeModelContent(() => {
-                                const content = editorRef.current.getValue();
-                                setEditorContent(content);
-                                // Basic validation
-                                if (!content.includes('def mode(')) {
-                                    setBuildOutput('Error: Missing mode() function');
-                                } else if (content.length > 10000) {
-                                    setBuildOutput('Error: Code exceeds 10KB limit');
-                                } else {
-                                    setBuildOutput('');
-                                }
-                            });
-                            
-                            setStatus('Editor ready');
-                        });
-                    } catch (error) {
-                        console.error('Editor Initialization Error:', error);
-                        setStatus('Editor initialization failed');
-                        setSimulationError('Failed to initialize code editor');
-                    }
-                };
-                
-                initializeEditor();
-                
-                return () => {
-                    if (editorRef.current) {
-                        editorRef.current.dispose();
-                    }
-                };
-            }, [activeTab]);
-
-            // Mock UDP communication (simulates firmware interaction)
-            const sendUdpCommand = async (command) => {
-                try {
-                    // Simulate UDP send (in a real app, use WebUDP or backend)
-                    const responses = {
-                        'ping': 'pong',
-                        'arm': battery < 20 ? 'error:low_battery' : 'ack:armed',
-                        'disarm': 'ack:disarmed',
-                        'takeoff': isArmed ? 'ack:takeoff' : 'error:not_armed',
-                        'land': 'ack:land',
-                        'autotune': 'ack:autotune',
-                        'get_raw_sensor': 'ack:raw_sensor,ax:1.0,ay:0.5,az:-1.0,gx:0.1,gy:-0.2,gz:0.3',
-                        'deploy_code': 'ack:deploy_ready',
-                        'set_targets': 'ack:targets_set'
-                    };
-                    const response = responses[command.split(':')[0]] || 'ack:unknown';
-                    if (response.startsWith('error')) {
-                        throw new Error(response.split(':')[1]);
-                    }
-                    return response;
-                } catch (error) {
-                    console.error('UDP Command Error:', error);
-                    throw error;
-                }
-            };
-
-            // Mock telemetry loop
-            React.useEffect(() => {
-                if (isSimulating || connectionStatus === 'Connected') {
-                    telemetryIntervalRef.current = setInterval(() => {
-                        const newTelemetry = {
-                            timestamp: Date.now(),
-                            roll: angles[0] + (Math.random() - 0.5) * 0.1,
-                            pitch: angles[1] + (Math.random() - 0.5) * 0.1,
-                            yaw: angles[2] + (Math.random() - 0.5) * 0.1,
-                            height: height + (Math.random() - 0.5) * 0.01,
-                            battery: Math.max(0, battery - 0.01)
-                        };
-                        setTelemetryData(prev => [...prev.slice(-100), newTelemetry]);
-                        setAngles([newTelemetry.roll, newTelemetry.pitch, newTelemetry.yaw]);
-                        setHeight(newTelemetry.height);
-                        setBattery(newTelemetry.battery);
-                    }, 100);
-                }
-                return () => clearInterval(telemetryIntervalRef.current);
-            }, [isSimulating, connectionStatus, angles, height, battery]);
-
-            // Initialize Chart.js for telemetry
-            React.useEffect(() => {
-                if (chartRef.current) {
-                    const ctx = chartRef.current.getContext('2d');
-                    const chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: [],
-                            datasets: [
-                                {
-                                    label: 'Roll (°)',
-                                    data: [],
-                                    borderColor: '#00f0ff',
-                                    fill: false
-                                },
-                                {
-                                    label: 'Pitch (°)',
-                                    data: [],
-                                    borderColor: '#ff3e7f',
-                                    fill: false
-                                },
-                                {
-                                    label: 'Height (m)',
-                                    data: [],
-                                    borderColor: '#00ff80',
-                                    fill: false
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                x: { display: false },
-                                y: { suggestedMin: -10, suggestedMax: 10 }
-                            },
-                            plugins: { legend: { labels: { color: '#e0e0ff' } } }
-                        }
-                    });
-
-                    return () => chart.destroy();
-                }
-            }, []);
-
-            // Update chart with telemetry
-            React.useEffect(() => {
-                if (chartRef.current && telemetryData.length > 0) {
-                    const chart = Chart.getChart(chartRef.current);
-                    chart.data.labels = telemetryData.map(d => d.timestamp);
-                    chart.data.datasets[0].data = telemetryData.map(d => d.roll);
-                    chart.data.datasets[1].data = telemetryData.map(d => d.pitch);
-                    chart.data.datasets[2].data = telemetryData.map(d => d.height);
-                    chart.update();
-                }
-            }, [telemetryData]);
-
-            // Simulate code execution
-            const simulateCode = () => {
-                try {
-                    if (!editorContent.includes('def mode(')) {
-                        throw new Error('Missing mode() function');
-                    }
-
-                    // Mock PID controller
-                    class PID {
-                        constructor() {
-                            this.kp = 1.0;
-                            this.ki = 0.05;
-                            this.kd = 0.2;
-                            this.integral = 0;
-                            this.prevError = 0;
-                        }
-                        set_gains(kp, ki, kd) {
-                            this.kp = kp;
-                            this.ki = ki;
-                            this.kd = kd;
-                        }
-                        update(target, current, dt) {
-                            const error = target - current;
-                            this.integral += error * dt;
-                            const derivative = (error - this.prevError) / dt;
-                            this.prevError = error;
-                            return this.kp * error + this.ki * this.integral + this.kd * derivative;
-                        }
-                    }
-
-                    const pids = [new PID(), new PID(), new PID()];
-                    let simThrottle = throttle;
-                    let simAngles = [...angles];
-                    let simHeight = height;
-                    let simMotorSpeeds = [0, 0, 0, 0];
-                    const dt = 0.033; // 30 FPS
-
-                    // Simplified physics simulation
-                    const mass = 0.05; // 50g
-                    const gravity = 9.81; // m/s²
-                    const thrustPerMotor = 0.1; // N per max motor speed
-                    const drag = 0.01; // Simplified drag coefficient
-
-                    // Execute code safely
-                    const modeFunc = new Function('pids', 'throttle', 'angles', 'targets', 'dt', `
-                        ${editorContent}
-                        return mode(pids, throttle, angles, targets, dt);
-                    `);
-                    const result = modeFunc(pids, simThrottle, simAngles, [0, 0, 0, simHeight], dt);
-                    simMotorSpeeds = result.map(speed => Math.max(0, Math.min(65535, speed)));
-
-                    // Update drone state with physics
-                    const totalThrust = simMotorSpeeds.reduce((sum, speed) => sum + (speed / 65535) * thrustPerMotor, 0);
-                    const accel = (totalThrust - mass * gravity) / mass - drag * simHeight;
-                    simHeight += accel * dt * dt / 2;
-                    simHeight = Math.max(0, Math.min(10, simHeight));
-
-                    const rollDiff = (simMotorSpeeds[1] + simMotorSpeeds[2] - simMotorSpeeds[0] - simMotorSpeeds[3]) / 65535;
-                    const pitchDiff = (simMotorSpeeds[0] + simMotorSpeeds[1] - simMotorSpeeds[2] - simMotorSpeeds[3]) / 65535;
-                    simAngles[0] += rollDiff * 5;
-                    simAngles[1] += pitchDiff * 5;
-                    simAngles[0] = Math.max(-45, Math.min(45, simAngles[0]));
-                    simAngles[1] = Math.max(-45, Math.min(45, simAngles[1]));
-
-                    // Warnings
-                    const newWarnings = [];
-                    if (simHeight <= 0 && simThrottle > 0) {
-                        newWarnings.push('Crash Detected: Height reached 0m');
-                    }
-                    if (Math.abs(simAngles[0]) > 45 || Math.abs(simAngles[1]) > 45) {
-                        newWarnings.push('Excessive Roll/Pitch Detected');
-                    }
-                    if (simMotorSpeeds.some(speed => speed >= 65535)) {
-                        newWarnings.push('Motor Speed Limit Exceeded');
-                    }
-                    if (battery < 20) {
-                        newWarnings.push('Low Battery: Arming disabled');
-                    }
-                    setSimulationWarnings(newWarnings);
-
-                    // Update state
-                    setHeight(simHeight);
-                    setAngles(simAngles);
-                    setMotorSpeeds(simMotorSpeeds);
-                    setThrottle(simThrottle);
-
-                    // Check test scenario
-                    if (selectedTestScenario) {
-                        const scenario = testScenarios.find(s => s.id === selectedTestScenario);
-                        if (scenario) {
-                            const heightOk = Math.abs(simHeight - scenario.criteria.height) <= 0.5;
-                            const rollOk = Math.abs(simAngles[0]) <= scenario.criteria.rollMax;
-                            const pitchOk = Math.abs(simAngles[1]) <= scenario.criteria.pitchMax;
-                            const yawOk = !scenario.criteria.yaw || Math.abs(simAngles[2] - scenario.criteria.yaw) <= 5;
-                            setTestResult({
-                                scenario: scenario.name,
-                                passed: heightOk && rollOk && pitchOk && yawOk,
-                                details: {
-                                    height: heightOk ? 'Pass' : `Fail (Expected ${scenario.criteria.height}m, Got ${simHeight.toFixed(1)}m)`,
-                                    roll: rollOk ? 'Pass' : `Fail (Expected <${scenario.criteria.rollMax}°, Got ${simAngles[0].toFixed(1)}°)`,
-                                    pitch: pitchOk ? 'Pass' : `Fail (Expected <${scenario.criteria.pitchMax}°, Got ${simAngles[1].toFixed(1)}°)`,
-                                    yaw: yawOk ? 'Pass' : `Fail (Expected ${scenario.criteria.yaw}°, Got ${simAngles[2].toFixed(1)}°)`
-                                }
-                            });
-                        }
-                    }
-
-                    // Stability metrics
-                    const stabilityScore = 100 - (Math.abs(simAngles[0]) + Math.abs(simAngles[1])) / 0.9;
-                    const responseTime = simHeight > 0 ? 1 / (Math.abs(simHeight - customInputs.initialHeight) / dt) : 0;
-                    setStabilityReport({
-                        stabilityScore: Math.max(0, Math.min(100, stabilityScore.toFixed(1))),
-                        responseTime: responseTime.toFixed(2)
-                    });
-
-                } catch (error) {
-                    setSimulationError('Code Execution Error: ' + error.message);
-                    setIsSimulating(false);
-                }
-            };
-
-            // Babylon.js Simulation Setup
-            React.useEffect(() => {
-                let mounted = true;
-                let retryCount = 0;
-                const maxRetries = 5;
-                const retryInterval = 200;
-
-                const initializeSimulation = () => {
-                    if (!mounted) return;
-
-                    if (!containerRef.current) {
-                        if (retryCount < maxRetries) {
-                            retryCount++;
-                            setTimeout(initializeSimulation, retryInterval);
-                            return;
-                        }
-                        setSimulationError('Container element not found');
-                        return;
-                    }
-
-                    if (!window.BABYLON) {
-                        setSimulationError('Babylon.js library failed to load');
-                        return;
-                    }
-
-                    try {
-                        const canvas = document.createElement('canvas');
-                        canvas.style.width = '100%';
-                        canvas.style.height = '200px';
-                        containerRef.current.appendChild(canvas);
-
-                        const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
-                        engineRef.current = engine;
-
-                        const scene = new BABYLON.Scene(engine);
-                        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
-                        sceneRef.current = scene;
-
-                        const camera = new BABYLON.ArcRotateCamera(
-                            'camera',
-                            -Math.PI / 2,
-                            Math.PI / 4,
-                            5,
-                            new BABYLON.Vector3(0, 0, 0),
-                            scene
-                        );
-                        camera.attachControl(canvas, true);
-                        cameraRef.current = camera;
-
-                        const droneGroup = new BABYLON.Mesh('droneGroup', scene);
-
-                        const body = BABYLON.MeshBuilder.CreateBox('body', { width: 0.5, height: 0.2, depth: 0.5 }, scene);
-                        const bodyMaterial = new BABYLON.StandardMaterial('bodyMat', scene);
-                        bodyMaterial.diffuseColor = new BABYLON.Color3.FromHexString('#00f0ff');
-                        bodyMaterial.wireframe = true;
-                        body.material = bodyMaterial;
-                        body.parent = droneGroup;
-
-                        for (let i = 0; i < 4; i++) {
-                            const arm = BABYLON.MeshBuilder.CreateBox('arm' + i, { width: 0.8, height: 0.05, depth: 0.05 }, scene);
-                            const armMaterial = new BABYLON.StandardMaterial('armMat' + i, scene);
-                            armMaterial.diffuseColor = new BABYLON.Color3.FromHexString('#ff3e7f');
-                            armMaterial.wireframe = true;
-                            arm.material = armMaterial;
-                            arm.position = new BABYLON.Vector3(
-                                0.5 * Math.cos((i * Math.PI) / 2),
-                                0,
-                                0.5 * Math.sin((i * Math.PI) / 2)
-                            );
-                            arm.rotation.y = (i * Math.PI) / 2;
-                            arm.parent = droneGroup;
-                        }
-
-                        for (let i = 0; i < 4; i++) {
-                            const prop = BABYLON.MeshBuilder.CreateCylinder('prop' + i, { diameter: 0.4, height: 0.02, tessellation: 16 }, scene);
-                            const propMaterial = new BABYLON.StandardMaterial('propMat' + i, scene);
-                            propMaterial.diffuseColor = new BABYLON.Color3.FromHexString('#00ff88');
-                            propMaterial.wireframe = true;
-                            prop.material = propMaterial;
-                            prop.position = new BABYLON.Vector3(
-                                0.7 * Math.cos((i * Math.PI) / 2),
-                                0.1,
-                                0.7 * Math.sin((i * Math.PI) / 2)
-                            );
-                            prop.parent = droneGroup;
-                        }
-
-                        droneGroupRef.current = droneGroup;
-
-                        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
-                        light.intensity = 0.7;
-
-                        const animate = () => {
-                            if (!mounted) return;
-
-                            try {
-                                if (!droneGroupRef.current || !sceneRef.current || !engineRef.current) {
-                                    setSimulationError('Animation failed: Missing components');
-                                    return;
-                                }
-
-                                if (isSimulating) {
-                                    droneGroupRef.current.rotation.x = angles[1] * (Math.PI / 180);
-                                    droneGroupRef.current.rotation.z = -angles[0] * (Math.PI / 180);
-                                    droneGroupRef.current.rotation.y = angles[2] * (Math.PI / 180);
-                                    droneGroupRef.current.position.y = height * 0.1;
-
-                                    droneGroupRef.current.getChildMeshes().forEach((mesh, index) => {
-                                        if (mesh.name.startsWith('prop')) {
-                                            mesh.rotation.z += 0.1 * (motorSpeeds[index - 4] / 65535);
-                                        }
-                                    });
-
-                                    simulateCode();
-                                }
-
-                                engineRef.current.runRenderLoop(() => {
-                                    sceneRef.current.render();
-                                });
-                            } catch (error) {
-                                setSimulationError('Animation rendering failed: ' + error.message);
-                                engineRef.current.stopRenderLoop();
-                            }
-                        };
-
-                        animate();
-                        setSimulationError(null);
-
-                        const handleResize = () => {
-                            try {
-                                if (containerRef.current && engineRef.current) {
-                                    engineRef.current.resize();
-                                }
-                            } catch (error) {
-                                setSimulationError('Window resize handling failed: ' + error.message);
-                            }
-                        };
-
-                        window.addEventListener('resize', handleResize);
-
-                        return () => {
-                            mounted = false;
-                            window.removeEventListener('resize', handleResize);
-                            if (engineRef.current) {
-                                engineRef.current.stopRenderLoop();
-                                engineRef.current.dispose();
-                            }
-                            if (containerRef.current && canvas) {
-                                containerRef.current.removeChild(canvas);
-                            }
-                        };
-                    } catch (error) {
-                        setSimulationError('Failed to initialize 3D simulation: ' + error.message);
-                    }
-                };
-
-                const timeoutId = setTimeout(initializeSimulation, 100);
-
-                return () => {
-                    clearTimeout(timeoutId);
-                    mounted = false;
-                };
-            }, [isSimulating, angles, height, motorSpeeds, throttle]);
-
-            // Test drone connection
-            const testDroneConnection = async () => {
-                setConnectionStatus('Testing connection...');
-                try {
-                    const response = await sendUdpCommand('ping');
-                    if (response === 'pong') {
-                        setConnectionStatus('Connected');
-                        setStatus('Drone connection successful');
-                    } else {
-                        setConnectionStatus('Connection failed');
-                        setStatus('Failed to connect to drone');
-                    }
-                } catch (error) {
-                    setConnectionStatus('Connection failed');
-                    setStatus(`Failed to connect to drone: ${error.message}`);
-                }
-            };
-
-            // Save drone config to localStorage
-            const saveDroneConfig = (newConfig) => {
-                const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-                if (!ipRegex.test(newConfig.ip)) {
-                    setStatus('Invalid IP address');
-                    return;
-                }
-                setDroneConfig(newConfig);
-                localStorage.setItem('droneConfig', JSON.stringify(newConfig));
-            };
-
-            // Validate email format
-            const validateEmail = (email) => {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            };
-
-            // Save profile to CSV
-            const saveToCsv = (profile) => {
-                const csvHeader = "Name,College Name,Email ID,Username,Educational Background,Score,IP\n";
-                const escapeCsvField = (field) => `"${field.replace(/"/g, '""')}"`;
-                const csvRow = [
-                    escapeCsvField(profile.name),
-                    escapeCsvField(profile.collegeName),
-                    escapeCsvField(profile.email),
-                    escapeCsvField(profile.username),
-                    escapeCsvField(profile.educationalBackground),
-                    profile.score,
-                    escapeCsvField(profile.ip)
-                ].join(',');
-                const existingCsv = localStorage.getItem('profileDatabase') || csvHeader;
-                const updatedCsv = existingCsv + csvRow + '\n';
-                localStorage.setItem('profileDatabase', updatedCsv);
-            };
-
-            const handleCreateProfile = () => {
-                const { name, collegeName, email, username, educationalBackground } = profileData;
-                if (!name.trim() || !collegeName.trim() || !email.trim() || !username.trim() || !educationalBackground.trim()) {
-                    setStatus('All fields are required');
-                    return;
-                }
-                if (username.length > 15) {
-                    setStatus('Username must be 15 characters or less');
-                    return;
-                }
-                if (!validateEmail(email)) {
-                    setStatus('Invalid email format');
-                    return;
-                }
-                if (name.length > 100 || collegeName.length > 100 || educationalBackground.length > 100) {
-                    setStatus('Fields must be 100 characters or less');
-                    return;
-                }
-                if (leaderboard.some(entry => entry.username === username)) {
-                    setStatus('Username already exists');
-                    return;
-                }
-                
-                const newProfile = {
-                    name,
-                    collegeName,
-                    email,
-                    username,
-                    educationalBackground,
-                    score: 0,
-                    ip: currentIp
-                };
-                
-                setLeaderboard(prev => [
-                    ...prev,
-                    { username, score: 0, ip: currentIp }
-                ]);
-                saveToCsv(newProfile);
-                setShowProfileModal(false);
-                setProfileData({ name: '', collegeName: '', email: '', username: '', educationalBackground: '' });
-                setStatus('Profile created');
-            };
-
-            const handleAddProfile = () => {
-                setShowProfileModal(true);
-                setProfileData({ name: '', collegeName: '', email: '', username: '', educationalBackground: '' });
-            };
-
-            const handleCheckboxChange = (username) => {
-                setSelectedProfiles(prev => 
-                    prev.includes(username)
-                        ? prev.filter(n => n !== username)
-                        : [...prev, username]
-                );
-            };
-
-            const handleDeleteProfile = () => {
-                if (selectedProfiles.length === 0) {
-                    setStatus('Please select at least one profile to delete');
-                    return;
-                }
-                
-                const invalidSelections = selectedProfiles.filter(username => {
-                    const entry = leaderboard.find(entry => entry.username === username);
-                    return entry && entry.ip !== currentIp;
-                });
-
-                if (invalidSelections.length > 0) {
-                    setStatus('You can only delete profiles created from your IP');
-                    return;
-                }
-
-                setShowDeleteConfirm(true);
-            };
-
-            const confirmDelete = () => {
-                const updatedLeaderboard = leaderboard.filter(entry => !selectedProfiles.includes(entry.username));
-                setLeaderboard(updatedLeaderboard);
-                const csvHeader = "Name,College Name,Email ID,Username,Educational Background,Score,IP\n";
-                const escapeCsvField = (field) => `"${field.replace(/"/g, '""')}"`;
-                let updatedCsv = csvHeader;
-                updatedLeaderboard.forEach(entry => {
-                    const fullProfile = (localStorage.getItem('profileDatabase') || '').split('\n').slice(1).find(row => row.includes(entry.username));
-                    if (fullProfile) {
-                        updatedCsv += fullProfile + '\n';
-                    }
-                });
-                localStorage.setItem('profileDatabase', updatedCsv);
-                setSelectedProfiles([]);
-                setShowDeleteConfirm(false);
-                setStatus('Profile(s) deleted');
-            };
-
-            const cancelDelete = () => {
-                setShowDeleteConfirm(false);
-                setStatus('Deletion cancelled');
-            };
-
-            // Drone control commands
-            const handleControl = async (command) => {
-                try {
-                    switch (command) {
-                        case 'Up':
-                            setThrottle(prev => Math.min(prev + 10, 100));
-                            await sendUdpCommand('set_targets:0,0,0,' + (height + 0.1));
-                            break;
-                        case 'Down':
-                            setThrottle(prev => Math.max(prev - 10, 0));
-                            await sendUdpCommand('set_targets:0,0,0,' + (height - 0.1));
-                            break;
-                        case 'Forward':
-                            await sendUdpCommand('set_targets:5,0,0,' + height);
-                            setAngles([angles[0], Math.min(angles[1] + 5, 45), angles[2]]);
-                            break;
-                        case 'Backward':
-                            await sendUdpCommand('set_targets:-5,0,0,' + height);
-                            setAngles([angles[0], Math.max(angles[1] - 5, -45), angles[2]]);
-                            break;
-                        case 'Left':
-                            await sendUdpCommand('set_targets:0,-5,0,' + height);
-                            setAngles([Math.max(angles[0] - 5, -45), angles[1], angles[2]]);
-                            break;
-                        case 'Right':
-                            await sendUdpCommand('set_targets:0,5,0,' + height);
-                            setAngles([Math.min(angles[0] + 5, 45), angles[1], angles[2]]);
-                            break;
-                        case 'Yaw Left':
-                            await sendUdpCommand('set_targets:0,0,-5,' + height);
-                            setAngles([angles[0], angles[1], (angles[2] - 5) % 360]);
-                            break;
-                        case 'Yaw Right':
-                            await sendUdpCommand('set_targets:0,0,5,' + height);
-                            setAngles([angles[0], angles[1], (angles[2] + 5) % 360]);
-                            break;
-                        case 'Arm':
-                            const armResponse = await sendUdpCommand('arm');
-                            if (armResponse.includes('ack:armed')) {
-                                setIsArmed(true);
-                                setStatus('Drone armed');
-                            }
-                            break;
-                        case 'Disarm':
-                            const disarmResponse = await sendUdpCommand('disarm');
-                            if (disarmResponse.includes('ack:disarmed')) {
-                                setIsArmed(false);
-                                setStatus('Drone disarmed');
-                            }
-                            break;
-                        case 'Takeoff':
-                            if (!isArmed) throw new Error('Drone not armed');
-                            const takeoffResponse = await sendUdpCommand('takeoff');
-                            if (takeoffResponse.includes('ack:takeoff')) {
-                                setStatus('Takeoff initiated');
-                                setHeight(0.5);
-                            }
-                            break;
-                        case 'Land':
-                            const landResponse = await sendUdpCommand('land');
-                            if (landResponse.includes('ack:land')) {
-                                setStatus('Landing initiated');
-                                setHeight(0);
-                            }
-                            break;
-                        case 'Autotune':
-                            if (isArmed) throw new Error('Cannot autotune while armed');
-                            const autotuneResponse = await sendUdpCommand('autotune');
-                            if (autotuneResponse.includes('ack:autotune')) {
-                                setStatus('Auto-tuning started');
-                                setTimeout(() => {
-                                    setStatus('Auto-tuning complete');
-                                    setEditorContent(prev => prev + '\n# Auto-tuned gains applied\npids[0].set_gains(1.3, 0.06, 0.3);');
-                                }, 5000); // Simulate 5s tuning
-                            }
-                            break;
-                        case 'Reset':
-                            setAngles([0, 0, 0]);
-                            setHeight(0);
-                            setThrottle(0);
-                            setIsArmed(false);
-                            await sendUdpCommand('disarm');
-                            break;
-                    }
-                } catch (error) {
-                    setStatus(`Control error: ${error.message}`);
-                }
-            };
-
-            const buildCode = () => {
-                setStatus('Building...');
-                setBuildOutput('');
-                
-                setTimeout(() => {
-                    try {
-                        if (!editorContent.includes('def mode(')) {
-                            throw new Error('Missing mode() function');
-                        }
-                        if (editorContent.length > 10000) {
-                            throw new Error('Code exceeds 10KB limit');
-                        }
-                        
-                        setBuildOutput('Build successful!\nCode validated and ready for simulation');
-                        setStatus('Ready');
-                    } catch (error) {
-                        setBuildOutput(`Build failed: ${error.message}`);
-                        setStatus('Build error');
-                    }
-                }, 1000);
-            };
-
-            const startSimulation = () => {
-                if (buildOutput.includes('failed')) {
-                    setStatus('Fix build errors first');
-                    return;
-                }
-                
-                setStatus('Starting simulation...');
-                setIsSimulating(true);
-                setSimulationError(null);
-                setSimulationWarnings([]);
-                setTestResult(null);
-                setStabilityReport(null);
-                
-                // Apply custom inputs
-                setHeight(parseFloat(customInputs.initialHeight) || 0);
-                setAngles([
-                    parseFloat(customInputs.initialRoll) || 0,
-                    parseFloat(customInputs.initialPitch) || 0,
-                    parseFloat(customInputs.initialYaw) || 0
-                ]);
-                setThrottle(50);
-                
-                setTimeout(() => {
-                    setStatus('Simulation running');
-                }, 500);
-            };
-
-            const stopSimulation = () => {
-                setIsSimulating(false);
-                setStatus('Simulation stopped');
-                clearInterval(telemetryIntervalRef.current);
-            };
-
-            const deployToDrone = async () => {
-                if (isDeploying) {
-                    setStatus('Deployment already in progress');
-                    return;
-                }
-                if (!buildOutput.includes('successful')) {
-                    setStatus('Code not built successfully');
-                    return;
-                }
-                if (!isArmed) {
-                    setStatus('Drone must be armed before deployment');
-                    return;
-                }
-                if (connectionStatus !== 'Connected') {
-                    setStatus('Drone not connected');
-                    return;
-                }
-
-                setIsDeploying(true);
-                setDeployProgress(0);
-                setStatus('Connecting to drone...');
-
-                try {
-                    const response = await sendUdpCommand('deploy_code');
-                    if (response.includes('ack')) {
-                        setStatus('Sending code...');
-                        const chunkSize = 128;
-                        const code = editorContent + '\nEOF\n';
-                        const totalBytes = code.length;
-                        let bytesSent = 0;
-
-                        while (bytesSent < totalBytes) {
-                            const chunk = code.slice(bytesSent, bytesSent + chunkSize);
-                            bytesSent += chunk.length;
-                            setDeployProgress(Math.min((bytesSent / totalBytes) * 100, 100));
-                            await new Promise(resolve => setTimeout(resolve, 10));
-                        }
-
-                        setStatus('Deployment successful');
-                        setTimeout(() => {
-                            setIsDeploying(false);
-                            setDeployProgress(0);
-                            setStatus('Drone ready');
-                        }, 1000);
-                    } else {
-                        throw new Error('Deployment initiation failed');
-                    }
-                } catch (error) {
-                    setStatus(`Deployment failed: ${error.message}`);
-                    setIsDeploying(false);
-                    setDeployProgress(0);
-                }
-            };
-
-            const downloadTelemetry = () => {
-                const csvHeader = 'Timestamp,Roll,Pitch,Yaw,Height,Battery\n';
-                const csvRows = telemetryData.map(d => 
-                    `${d.timestamp},${d.roll.toFixed(2)},${d.pitch.toFixed(2)},${d.yaw.toFixed(2)},${d.height.toFixed(2)},${d.battery.toFixed(1)}`
-                ).join('\n');
-                const csvContent = csvHeader + csvRows;
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'telemetry.csv';
-                a.click();
-                URL.revokeObjectURL(url);
-                setStatus('Telemetry downloaded');
-            };
-
-            const convertLogic = () => {
-                if (!logicInput.trim()) {
-                    setStatus('Enter logic first');
-                    return;
-                }
-                
-                setStatus('Converting logic...');
-                
-                try {
-                    let convertedCode = '';
-                    const input = logicInput.toLowerCase().replace(/[^a-z0-9\s><=]/g, '');
-                    
-                    if (input.includes('if height >')) {
-                        const value = input.match(/height > (\d+)/)?.[1] || '1';
-                        const action = input.includes('increase') ? '+' : '-';
-                        const amount = input.match(/by (\d+)/)?.[1] || '10';
-                        convertedCode = `if height > ${value}:\n    # Adjust throttle\n    throttle = throttle ${action} ${amount}`;
-                    } 
-                    else if (input.includes('if height <')) {
-                        const value = input.match(/height < (\d+)/)?.[1] || '1';
-                        const action = input.includes('increase') ? '+' : '-';
-                        const amount = input.match(/by (\d+)/)?.[1] || '10';
-                        convertedCode = `if height < ${value}:\n    # Adjust throttle\n    throttle = throttle ${action} ${amount}`;
-                    }
-                    else if (input.includes('if roll >')) {
-                        const value = input.match(/roll > (\d+)/)?.[1] || '5';
-                        const correction = input.includes('left') ? '-' : '+';
-                        convertedCode = `if angles[0] > ${value}:\n    # Correct roll\n    roll_corr = roll_corr ${correction} 100`;
-                    }
-                    else if (input.includes('if pitch >')) {
-                        const value = input.match(/pitch > (\d+)/)?.[1] || '5';
-                        const correction = input.includes('forward') ? '-' : '+';
-                        convertedCode = `if angles[1] > ${value}:\n    # Correct pitch\n    pitch_corr = pitch_corr ${correction} 100`;
-                    }
-                    else if (input.includes('after') && input.includes('seconds')) {
-                        const seconds = input.match(/(\d+)\s*seconds/)?.[1] || '5';
-                        const action = input.includes('increase') ? '+' : '-';
-                        const amount = input.includes('by') ? input.match(/by (\d+)/)?.[1] || '10' : '10';
-                        convertedCode = `if time_elapsed > ${seconds}:\n    # Time-based adjustment\n    throttle = throttle ${action} ${amount}`;
-                    }
-                    else {
-                        throw new Error('Unsupported logic pattern');
-                    }
-                    
-                    convertedCode += `\n    # Ensure throttle stays within 0-100 range\n    throttle = max(min(throttle, 100), 0)`;
-                    
-                    const newContent = editorContent + '\n\n' + convertedCode;
-                    setEditorContent(newContent);
-                    editorRef.current.setValue(newContent);
-                    
-                    setStatus('Logic converted to code');
-                } catch (error) {
-                    setStatus('Conversion error: ' + error.message);
-                }
-            };
-
-            const selectChallenge = (challenge) => {
-                setActiveTab('CHALLENGES');
-                setStatus(`Challenge: ${challenge.title}`);
-                
-                const newContent = codeTemplates['CHALLENGES'] + `\n\n# Challenge: ${challenge.title}\n# ${challenge.description}`;
-                setEditorContent(newContent);
-                editorRef.current.setValue(newContent);
-                
-                setUserProgress(prev => ({
-                    ...prev,
-                    [challenge.id]: { ...prev[challenge.id], attempted: true }
-                }));
-                
-                setIsSimulating(true);
-            };
-
-            const checkChallenge = (challenge) => {
-                const criteria = challenge.criteria;
-                setStatus('Evaluating...');
-                
-                setTimeout(() => {
-                    const heightOk = Math.abs(height - criteria.height) <= 0.5;
-                    const rollOk = Math.abs(angles[0]) <= criteria.rollMax;
-                    const pitchOk = Math.abs(angles[1]) <= criteria.pitchMax;
-                    let feedback = [];
-                    if (!heightOk) {
-                        feedback.push(`Height deviation too large: Expected ${criteria.height}m, Got ${height.toFixed(1)}m`);
-                    }
-                    if (!rollOk) {
-                        feedback.push(`Roll exceeded limit: Expected <${criteria.rollMax}°, Got ${angles[0].toFixed(1)}°`);
-                    }
-                    if (!pitchOk) {
-                        feedback.push(`Pitch exceeded limit: Expected <${criteria.pitchMax}°, Got ${angles[1].toFixed(1)}°`);
-                    }
-                    if (!rollOk && feedback.length > 0) {
-                        feedback.push('Suggestion: Increase kd to reduce roll oscillation');
-                    }
-                    if (!pitchOk && feedback.length > 0) {
-                        feedback.push('Suggestion: Increase kd to reduce pitch oscillation');
-                    }
-                    
-                    if (heightOk && rollOk && pitchOk) {
-                        setStatus('Challenge completed!');
-                        setUserProgress(prev => ({
-                            ...prev,
-                            [challenge.id]: { completed: true, score: challenge.points }
-                        }));
-                        
-                        setLeaderboard(prev => {
-                            const newLeaderboard = prev.map(entry => 
-                                entry.username === profileData.username 
-                                    ? { ...entry, score: entry.score + challenge.points }
-                                    : entry
-                            ).sort((a, b) => b.score - a.score);
-                            
-                            const csvHeader = "Name,College Name,Email ID,Username,Educational Background,Score,IP\n";
-                            const escapeCsvField = (field) => `"${field.replace(/"/g, '""')}"`;
-                            let updatedCsv = csvHeader;
-                            newLeaderboard.forEach(entry => {
-                                const fullProfile = (localStorage.getItem('profileDatabase') || '').split('\n').slice(1).find(row => row.includes(entry.username));
-                                if (fullProfile) {
-                                    const profileParts = fullProfile.split(',').map(part => part.replace(/^"|"$/g, '').replace(/""/g, '"'));
-                                    profileParts[5] = entry.score;
-                                    updatedCsv += profileParts.map(part => escapeCsvField(part)).join(',') + '\n';
-                                }
-                            });
-                            localStorage.setItem('profileDatabase', updatedCsv);
-                            
-                            return [...newLeaderboard];
-                        });
-                    } else {
-                        setStatus('Challenge not completed: ' + feedback.join('; '));
-                    }
-                }, 1500);
-            };
-
-            const selectTutorial = (tutorial) => {
-                setShowTutorial(true);
-                setEditorContent(prev => prev + '\n\n# Tutorial: ' + tutorial.title + '\n' + tutorial.code);
-                editorRef.current.setValue(editorContent + '\n\n# Tutorial: ' + tutorial.title + '\n' + tutorial.code);
-                setStatus(`Started tutorial: ${tutorial.title}`);
-            };
-
-            return (
-                <div className="interface-font p-4 max-w-[100vw]">
-                    {showProfileModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                            <div className="cyber-card p-6 w-96">
-                                <h3 className="text-lg mb-4" style={{ color: '#00f0ff' }}>
-                                    CREATE PROFILE
-                                </h3>
-                                <div className="space-y-2">
-                                    <div>
-                                        <label className="text-xs text-gray-400">Name</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder="Enter full name"
-                                            value={profileData.name}
-                                            onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs text-gray-400">College Name</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder="Enter college name"
-                                            value={profileData.collegeName}
-                                            onChange={(e) => setProfileData({ ...profileData, collegeName: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs text-gray-400">Email ID</label>
-                                        <input
-                                            type="email"
-                                            className="input-field"
-                                            placeholder="Enter email ID"
-                                            value={profileData.email}
-                                            onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs text-gray-400">Username</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder="Enter username (max 15 chars)"
-                                            value={profileData.username}
-                                            onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs text-gray-400">Educational Background</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder="e.g., B.Tech in CSE, 2nd Year"
-                                            value={profileData.educationalBackground}
-                                            onChange={(e) => setProfileData({ ...profileData, educationalBackground: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-2 mt-4">
-                                    <button
-                                        onClick={handleCreateProfile}
-                                        className="cyber-button"
-                                    >
-                                        CREATE
-                                    </button>
-                                    <button
-                                        onClick={() => setShowProfileModal(false)}
-                                        className="delete-button"
-                                    >
-                                        CANCEL
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {showDeleteConfirm && (
-                        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                            <div className="cyber-card p-6 w-96">
-                                <h3 className="text-lg mb-4" style={{ color: '#00f0ff' }}>
-                                    CONFIRM DELETION
-                                </h3>
-                                <p className="mb-4 text-sm">
-                                    Are you sure you want to delete the selected profile(s)?
-                                </p>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={confirmDelete}
-                                        className="cyber-button"
-                                    >
-                                        YES
-                                    </button>
-                                    <button
-                                        onClick={cancelDelete}
-                                        className="delete-button"
-                                    >
-                                        NO
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {showTutorial && (
-                        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                            <div className="cyber-card p-6 w-96">
-                                <h3 className="text-lg mb-4" style={{ color: '#00f0ff' }}>
-                                    TUTORIALS
-                                </h3>
-                                <div className="space-y-2">
-                                    {tutorials.map(tutorial => (
-                                        <div key={tutorial.id} className="cyber-card p-2">
-                                            <h5 className="font-bold">{tutorial.title}</h5>
-                                            <ul className="text-xs text-gray-300 list-disc pl-4">
-                                                {tutorial.steps.map((step, index) => (
-                                                    <li key={index}>{step}</li>
-                                                ))}
-                                            </ul>
-                                            <button
-                                                className="cyber-button mt-2 text-xs"
-                                                onClick={() => {
-                                                    selectTutorial(tutorial);
-                                                    setShowTutorial(false);
-                                                }}
-                                            >
-                                                TRY THIS
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                                <button
-                                    onClick={() => setShowTutorial(false)}
-                                    className="delete-button mt-4 w-full"
-                                >
-                                    CLOSE
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="flex justify-between items-center mb-4">
-                        <div>
-                            <h1 className="text-2xl" style={{ color: '#00f0ff' }}>
-                                AirM FATEH DRONE
-                            </h1>
-                            <h2 className="text-lg" style={{ color: '#ff3e7f' }}>
-                                LOGIC PROGRAMMING INTERFACE
-                            </h2>
-                        </div>
-                        <div className="flex items-center">
-                            <div className={`w-3 h-3 rounded-full mr-2 ${status.includes('error') || status.includes('failed') ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                            <span className="text-sm">{status}</span>
-                        </div>
-                    </div>
-                    
-                    <div className="cyber-card p-4 mb-4">
-                        <h3 className="text-lg mb-2" style={{ color: '#00f0ff' }}>
-                            DRONE CONNECTION
-                        </h3>
-                        <div className="grid grid-cols-2 gap-2 mb-2">
-                            <div>
-                                <label className="text-xs text-gray-400">IP Address</label>
-                                <input
-                                    type="text"
-                                    className="input-field"
-                                    value={droneConfig.ip}
-                                    onChange={(e) => saveDroneConfig({ ...droneConfig, ip: e.target.value })}
-                                    placeholder="192.168.4.1"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-xs text-gray-400">Command Port</label>
-                                <input
-                                    type="number"
-                                    className="input-field"
-                                    value={droneConfig.port}
-                                    onChange={(e) => saveDroneConfig({ ...droneConfig, port: e.target.value })}
-                                    placeholder="8080"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-xs text-gray-400">Telemetry Port</label>
-                                <input
-                                    type="number"
-                                    className="input-field"
-                                    value={droneConfig.telemPort}
-                                    onChange={(e) => saveDroneConfig({ ...droneConfig, telemPort: e.target.value })}
-                                    placeholder="8081"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-xs text-gray-400">Wi-Fi SSID</label>
-                                <input
-                                    type="text"
-                                    className="input-field"
-                                    value={droneConfig.ssid}
-                                    onChange={(e) => saveDroneConfig({ ...droneConfig, ssid: e.target.value })}
-                                    placeholder="NanoDrone"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-xs text-gray-400">Wi-Fi Password</label>
-                                <input
-                                    type="password"
-                                    className="input-field"
-                                    value={droneConfig.password}
-                                    onChange={(e) => saveDroneConfig({ ...droneConfig, password: e.target.value })}
-                                    placeholder="drone1234"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <button
-                                onClick={testDroneConnection}
-                                className="cyber-button"
-                            >
-                                TEST CONNECTION
-                            </button>
-                            <span className="text-sm" style={{ color: connectionStatus === 'Connected' ? '#00ff80' : '#ff3e7f' }}>
-                                {connectionStatus}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 scrollable-container">
-                        <div className="cyber-card p-4 dynamic-height flex flex-col">
-                            <h3 className="text-lg mb-2" style={{ color: '#00f0ff' }}>
-                                CODE EDITOR
-                            </h3>
-                            <div className="flex mb-2">
-                                {['FATEH-V1', 'CUSTOM', 'CHALLENGES'].map(tab => (
-                                    <button
-                                        key={tab}
-                                        onClick={() => {
-                                            setActiveTab(tab);
-                                            setEditorContent(codeTemplates[tab]);
-                                            editorRef.current.setValue(codeTemplates[tab]);
-                                        }}
-                                        className={`cyber-button mr-2 ${activeTab === tab ? 'tab-active' : ''}`}
-                                    >
-                                        {tab}
-                                    </button>
-                                ))}
-                            </div>
-                            <div 
-                                id="editor" 
-                                className="editor-font flex-grow w-full border border-gray-700 rounded"
-                                style={{ backgroundColor: '#0a0a1a' }}
-                            ></div>
-                            
-                            <div className="mt-4">
-                                <textarea
-                                    className="w-full h-16 p-2 bg-black text-cyan-300 border border-purple-500 rounded-md text-xs font-mono mb-2"
-                                    placeholder="Enter logic (e.g., 'If height > 1, reduce throttle by 10')"
-                                    value={logicInput}
-                                    onChange={(e) => setLogicInput(e.target.value)}
-                                />
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-2">
-                                <button 
-                                    onClick={buildCode}
-                                    className="cyber-button"
-                                    disabled={isDeploying}
-                                >
-                                    BUILD
-                                </button>
-                                <button 
-                                    onClick={startSimulation}
-                                    className="cyber-button"
-                                    disabled={!buildOutput.includes('successful') || isDeploying}
-                                >
-                                    SIMULATE
-                                </button>
-                                <button 
-                                    onClick={deployToDrone}
-                                    className="cyber-button"
-                                    disabled={isDeploying}
-                                >
-                                    {isDeploying ? 'DEPLOYING...' : 'DEPLOY'}
-                                </button>
-                                <button 
-                                    onClick={convertLogic}
-                                    className="cyber-button"
-                                    disabled={isDeploying}
-                                >
-                                    CONVERT
-                                </button>
-                            </div>
-                            
-                            {isDeploying && (
-                                <div className="mt-2">
-                                    <div className="progress-bar">
-                                        <div 
-                                            className="progress-fill" 
-                                            style={{ width: `${deployProgress}%` }}
-                                        ></div>
-                                        <span className="progress-text">
-                                            {Math.round(deployProgress)}%
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                            
-                            {buildOutput && (
-                                <div className="mt-2 p-2 bg-black rounded text-xs font-mono text-green-400 overflow-auto max-h-20">
-                                    {buildOutput}
-                                </div>
-                            )}
-                        </div>
-                        
-                        <div className="cyber-card p-4 dynamic-height flex flex-col">
-                            <h3 className="text-lg mb-2" style={{ color: '#00f0ff' }}>
-                                {simulationError ? 'SIMULATION ERROR' : 'DRONE SIMULATION'}
-                            </h3>
-                            
-                            {simulationError ? (
-                                <div className="error-message flex-grow">
-                                    {simulationError}
-                                </div>
-                            ) : (
-                                <>
-                                    <div 
-                                        ref={containerRef} 
-                                        className="hologram-container mb-4"
-                                        id="simulation-container"
-                                    ></div>
-                                    
-                                    <div className="mb-4">
-                                        <details>
-                                            <summary>Test Scenarios</summary>
-                                            <select
-                                                className="input-field mt-2"
-                                                value={selectedTestScenario}
-                                                onChange={(e) => setSelectedTestScenario(e.target.value)}
-                                            >
-                                                <option value="">Select a scenario</option>
-                                                {testScenarios.map(scenario => (
-                                                    <option key={scenario.id} value={scenario.id}>
-                                                        {scenario.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </details>
-                                    </div>
-
-                                    <div className="mb-4">
-                                        <details>
-                                            <summary>Telemetry</summary>
-                                            <table className="telemetry-table mt-2">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Parameter</th>
-                                                        <th>Value</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Height</td>
-                                                        <td>{height.toFixed(1)}m</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Roll</td>
-                                                        <td>{angles[0].toFixed(1)}°</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Pitch</td>
-                                                        <td>{angles[1].toFixed(1)}°</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Yaw</td>
-                                                        <td>{angles[2].toFixed(1)}°</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Throttle</td>
-                                                        <td>{throttle.toFixed(0)}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Battery</td>
-                                                        <td>{battery.toFixed(0)}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Motor 1</td>
-                                                        <td>{(motorSpeeds[0] / 65535 * 100).toFixed(0)}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Motor 2</td>
-                                                        <td>{(motorSpeeds[1] / 65535 * 100).toFixed(0)}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Motor 3</td>
-                                                        <td>{(motorSpeeds[2] / 65535 * 100).toFixed(0)}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Motor 4</td>
-                                                        <td>{(motorSpeeds[3] / 65535 * 100).toFixed(0)}%</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            <button
-                                                className="cyber-button mt-2 w-full"
-                                                onClick={downloadTelemetry}
-                                            >
-                                                DOWNLOAD TELEMETRY
-                                            </button>
-                                            <div className="telemetry-chart mt-2">
-                                                <canvas ref={chartRef}></canvas>
-                                            </div>
-                                        </details>
-                                    </div>
-
-                                    <div className="mb-4">
-                                        <details>
-                                            <summary>Controls</summary>
-                                            <div className="grid grid-cols-3 gap-2 mt-2">
-                                                <button 
-                                                    onClick={() => handleControl('Up')}
-                                                    className="cyber-button"
-                                                    disabled={isDeploying}
-                                                >
-                                                    ↑ UP
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleControl('Forward')}
-                                                    className="cyber-button"
-                                                    disabled={isDeploying}
-                                                >
-                                                    ↗ FWD
-                                                </button>
-                                                <button 
-                                                    onClick={stopSimulation}
-                                                    className="cyber-button"
-                                                    disabled={!isSimulating || isDeploying}
-                                                >
-                                                    ■ STOP
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleControl('Left')}
-                                                    className="cyber-button"
-                                                    disabled={isDeploying
+        });
+
+        // Toggle module status (mock)
+        function toggleModule(moduleId) {
+            const block = document.querySelector(`[data-id="${moduleId}"]`);
+            const status = block.querySelector('p:nth-child(2)');
+            status.textContent = status.textContent.includes('Active') ? 'Status: Inactive' : 'Status: Active';
+        }
+    </script>
+</body>
+</html>
