@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiRM Fateh Nano Drone: Interactive Control Platform</title>
+    <title>AiRM Fateh Nano Drone: Math Learning Platform</title>
     <style>
         /* Embedded Tailwind CSS (subset) */
         *, ::before, ::after { box-sizing: border-box; }
@@ -24,6 +24,9 @@
         .h-3 { height: 0.75rem; }
         .rounded-full { border-radius: 9999px; }
         .bg-green-500 { background-color: #10b981; }
+        .fixed { position: fixed; }
+        .z-50 { z-index: 50; }
+        .hidden { display: none; }
 
         /* Custom Cyberpunk Styles */
         :root {
@@ -59,8 +62,8 @@
         }
         .block {
             position: absolute;
-            width: 200px;
-            height: 150px;
+            width: 250px;
+            height: 100px;
             background: rgba(0, 240, 255, 0.1);
             border: 2px solid var(--primary);
             border-radius: 8px;
@@ -70,7 +73,9 @@
             cursor: move;
             transition: transform 0.2s ease;
             user-select: none;
-            touch-action: none;
+            touch-action: manipulation;
+            pointer-events: auto;
+            outline: none;
         }
         .block:hover {
             background: rgba(0, 240, 255, 0.2);
@@ -81,18 +86,57 @@
             border-color: var(--secondary);
             box-shadow: 0 0 25px rgba(255, 62, 127, 0.7);
         }
-        .block button {
-            background: rgba(0, 240, 255, 0.2);
+        .block.selected {
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+        }
+        .glass-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 80vh;
+            background: rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            color: var(--primary);
+            padding: 20px;
+            z-index: 400;
+            overflow-y: auto;
+        }
+        .glass-window textarea {
+            width: 100%;
+            height: 50%;
+            font-size: 12px;
+            font-family: 'Share Tech Mono', monospace;
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--primary);
             color: var(--primary);
+            padding: 10px;
+            resize: none;
+            outline: none;
+        }
+        .math-explanation {
+            font-size: 12px;
+            color: #e0e0ff;
+            margin-top: 10px;
+        }
+        .close-button {
+            background: rgba(255, 62, 127, 0.2);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
             padding: 5px 10px;
             border-radius: 4px;
             font-family: 'Share Tech Mono', monospace;
             font-size: 12px;
             cursor: pointer;
+            float: right;
         }
-        .block button:hover {
-            background: rgba(0, 240, 255, 0.3);
+        .close-button:hover {
+            background: rgba(255, 62, 127, 0.3);
         }
         .header {
             position: fixed;
@@ -102,6 +146,11 @@
             z-index: 200;
             background: rgba(0, 0, 0, 0.8);
         }
+        .arrow {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/interactjs@1.10.27/dist/interact.min.js"></script>
@@ -110,7 +159,7 @@
     <div class="header p-4 flex justify-between items-center">
         <div>
             <h1 class="text-2xl" style="color: var(--primary);">AiRM FATEH NANO DRONE</h1>
-            <h2 class="text-lg" style="color: var(--secondary);">INTERACTIVE CONTROL PLATFORM</h2>
+            <h2 class="text-lg" style="color: var(--secondary);">MATH LEARNING PLATFORM</h2>
         </div>
         <div class="flex items-center">
             <div class="w-3 h-3 rounded-full mr-2 bg-green-500"></div>
@@ -119,39 +168,110 @@
     </div>
     <div class="canvas">
         <div class="grid"></div>
-        <div class="block" data-id="pid" style="left: 50px; top: 100px;">
-            <h3 class="text-sm font-bold">PID Controller</h3>
+        <svg class="arrow" width="100%" height="100%">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#ffff00" />
+                </marker>
+            </defs>
+            <line id="connectionArrow" x1="0" y1="0" x2="0" y2="0" stroke="#ffff00" stroke-width="2" marker-end="url(#arrowhead)" visibility="hidden" />
+        </svg>
+        <div class="block" data-id="logger" style="left: 50px; top: 100px;" tabindex="0">
+            <h3 class="text-sm font-bold">Logger</h3>
             <p class="text-xs">Status: Active</p>
-            <p class="text-xs">Gains: kp=1.0, ki=0.04</p>
-            <button onclick="toggleModule('pid')">Toggle</button>
         </div>
-        <div class="block" data-id="telemetry" style="left: 300px; top: 100px;">
-            <h3 class="text-sm font-bold">Telemetry</h3>
+        <div class="block" data-id="sensor" style="left: 350px; top: 100px;" tabindex="0">
+            <h3 class="text-sm font-bold">Sensor</h3>
             <p class="text-xs">Status: Active</p>
-            <p class="text-xs">Altitude: 0.5m</p>
-            <button onclick="toggleModule('telemetry')">Toggle</button>
         </div>
-        <div class="block" data-id="navigation" style="left: 550px; top: 100px;">
-            <h3 class="text-sm font-bold">Navigation</h3>
-            <p class="text-xs">Status: Inactive</p>
-            <p class="text-xs">Waypoints: 0</p>
-            <button onclick="toggleModule('navigation')">Toggle</button>
-        </div>
-        <div class="block" data-id="command" style="left: 50px; top: 300px;">
-            <h3 class="text-sm font-bold">Command Parser</h3>
+        <div class="block" data-id="control" style="left: 650px; top: 100px;" tabindex="0">
+            <h3 class="text-sm font-bold">Control</h3>
             <p class="text-xs">Status: Active</p>
-            <p class="text-xs">Last Cmd: Hover</p>
-            <button onclick="toggleModule('command')">Toggle</button>
         </div>
-        <div class="block" data-id="safety" style="left: 300px; top: 300px;">
-            <h3 class="text-sm font-bold">Safety</h3>
+        <div class="block" data-id="motor" style="left: 200px; top: 350px;" tabindex="0">
+            <h3 class="text-sm font-bold">Motor</h3>
             <p class="text-xs">Status: Active</p>
-            <p class="text-xs">Battery: 85%</p>
-            <button onclick="toggleModule('safety')">Toggle</button>
         </div>
+        <div class="block" data-id="communication" style="left: 500px; top: 350px;" tabindex="0">
+            <h3 class="text-sm font-bold">Communication</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+    </div>
+    <div class="glass-window hidden" id="codeWindow">
+        <button class="close-button" onclick="closeCodeWindow()">Close</button>
+        <div id="codeContent"></div>
     </div>
 
     <script>
+        // Code snippets for each block
+        const codeSnippets = {
+            logger: {
+                code: `float calculate_average(float readings[], int count) {
+    float sum = 0;
+    for (int i = 0; i < count; i++) {
+        sum += readings[i]; // Add each reading
+    }
+    float average = sum / count; // Divide by count to get mean
+    // Math: Average = (sum of values) / (number of values)
+    return average;
+}`,
+                explanation: "Math: Averages smooth sensor data. Try summing 5 numbers and dividing by 5!"
+            },
+            sensor: {
+                code: `float get_roll(float ax, float ay, float az) {
+    // Math: Roll angle = atan2(ay, sqrt(ax^2 + az^2)) * 180 / PI
+    float roll = atan2(ay, sqrt(ax * ax + az * az)) * 57.2958;
+    // Student: Try adjusting the formula
+    return roll;
+}
+float kalman_filter(float new_angle, float old_angle, float q, float r) {
+    float predicted = old_angle;
+    float gain = q / (q + r); // Weight for smoothing
+    float angle = predicted + gain * (new_angle - predicted);
+    // Student: Change q and r
+    return angle;
+}`,
+                explanation: "Math: Trigonometry finds angles. Kalman filter averages noisy data. Try q=0.01, r=0.03!"
+            },
+            control: {
+                code: `float pid_update(float target, float current, float dt) {
+    float kp = 1.2, ki = 0.05, kd = 0.25; // Gains
+    float error = target - current; // Error = desired - actual
+    static float integral = 0;
+    integral += error * dt; // Sum errors over time
+    float derivative = (error - prev_error) / dt; // Rate of change
+    float output = kp * error + ki * integral + kd * derivative;
+    prev_error = error;
+    // Math: Output = P*error + I*integral + D*derivative
+    return output;
+}
+static float prev_error = 0;`,
+                explanation: "Math: PID uses algebra and calculus to stabilize the drone. Try kp=1.5!"
+            },
+            motor: {
+                code: `void set_motor_speeds(float roll, float pitch, float yaw, float throttle) {
+    // Math: Linear equations to balance drone
+    float m1 = throttle - pitch + roll + yaw; // Front-left
+    float m2 = throttle + pitch - roll - yaw; // Front-right
+    float m3 = throttle - pitch - roll + yaw; // Rear-left
+    float m4 = throttle + pitch + roll - yaw; // Rear-right
+    // Student: Adjust coefficients
+}`,
+                explanation: "Math: Equations mix signals to control motors. Try changing pitch to 0.5*pitch!"
+            },
+            communication: {
+                code: `void send_telemetry(float roll, float pitch, float yaw, float battery) {
+    // Math: Scale and round numbers
+    int roll_int = roll * 10; // Example: 45.67 -> 456
+    int pitch_int = pitch * 10;
+    int yaw_int = yaw * 10;
+    int battery_int = battery;
+    // Student: Try scaling by 100
+}`,
+                explanation: "Math: Scaling converts decimals to integers for apps. Try roll * 100!"
+            }
+        };
+
         // Initialize interact.js for drag-and-drop
         interact('.block')
             .draggable({
@@ -172,10 +292,14 @@
                 listeners: {
                     move: dragMoveListener,
                     start(event) {
+                        console.log('Drag start:', event.target.dataset.id);
                         event.target.classList.add('active');
+                        event.target.focus();
                     },
                     end(event) {
+                        console.log('Drag end:', event.target.dataset.id);
                         event.target.classList.remove('active');
+                        updateArrow();
                     }
                 }
             });
@@ -188,12 +312,164 @@
             target.style.transform = `translate(${x}px, ${y}px)`;
             target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
+            updateArrow();
+        }
+
+        // Selection and arrow logic
+        let selectedBlocks = [];
+        let lastTapTime = 0;
+        let lastTappedBlock = null;
+        let singleTapTimeout = null;
+
+        function updateArrow() {
+            const arrow = document.getElementById('connectionArrow');
+            if (selectedBlocks.length === 2) {
+                const block1 = selectedBlocks[0];
+                const block2 = selectedBlocks[1];
+                const rect1 = block1.getBoundingClientRect();
+                const rect2 = block2.getBoundingClientRect();
+                const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
+
+                // Calculate border-to-border points
+                let x1, y1, x2, y2;
+
+                // Determine closest edges
+                const left1 = rect1.left - canvasRect.left;
+                const right1 = rect1.right - canvasRect.left;
+                const top1 = rect1.top - canvasRect.top;
+                const bottom1 = rect1.bottom - canvasRect.top;
+                const left2 = rect2.left - canvasRect.left;
+                const right2 = rect2.right - canvasRect.left;
+                const top2 = rect2.top - canvasRect.top;
+                const bottom2 = rect2.bottom - canvasRect.top;
+
+                // Find minimum distance between edges
+                const distances = [
+                    { x1: right1, y1: top1 + rect1.height / 2, x2: left2, y2: top2 + rect2.height / 2, dist: Math.abs(right1 - left2) }, // Right1 to Left2
+                    { x1: left1, y1: top1 + rect1.height / 2, x2: right2, y2: top2 + rect2.height / 2, dist: Math.abs(left1 - right2) }, // Left1 to Right2
+                    { x1: left1 + rect1.width / 2, y1: bottom1, x2: left2 + rect2.width / 2, y2: top2, dist: Math.abs(bottom1 - top2) }, // Bottom1 to Top2
+                    { x1: left1 + rect1.width / 2, y1: top1, x2: left2 + rect2.width / 2, y2: bottom2, dist: Math.abs(top1 - bottom2) } // Top1 to Bottom2
+                ];
+
+                const closest = distances.reduce((min, curr) => curr.dist < min.dist ? curr : min, distances[0]);
+
+                x1 = closest.x1;
+                y1 = closest.y1;
+                x2 = closest.x2;
+                y2 = closest.y2;
+
+                arrow.setAttribute('x1', x1);
+                arrow.setAttribute('y1', y1);
+                arrow.setAttribute('x2', x2);
+                arrow.setAttribute('y2', y2);
+                arrow.setAttribute('visibility', 'visible');
+            } else {
+                arrow.setAttribute('visibility', 'hidden');
+            }
+        }
+
+        // Fallback touch event handlers
+        let touchTarget = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isDragging = false;
+        let touchStartPosX = 0;
+        let touchStartPosY = 0;
+
+        document.querySelectorAll('.block').forEach(block => {
+            block.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                console.log('Touch start:', block.dataset.id);
+                touchTarget = block;
+                touchStartX = event.touches[0].clientX - (parseFloat(block.getAttribute('data-x')) || 0);
+                touchStartY = event.touches[0].clientY - (parseFloat(block.getAttribute('data-y')) || 0);
+                touchStartPosX = event.touches[0].clientX;
+                touchStartPosY = event.touches[0].clientY;
+                block.classList.add('active');
+                block.focus();
+                isDragging = false;
+            });
+
+            block.addEventListener('touchmove', (event) => {
+                if (!touchTarget) return;
+                event.preventDefault();
+                console.log('Touch move:', block.dataset.id);
+                const deltaX = Math.abs(event.touches[0].clientX - touchStartPosX);
+                const deltaY = Math.abs(event.touches[0].clientY - touchStartPosY);
+                if (deltaX > 5 || deltaY > 5) {
+                    isDragging = true;
+                }
+                const x = event.touches[0].clientX - touchStartX;
+                const y = event.touches[0].clientY - touchStartY;
+                touchTarget.style.transform = `translate(${x}px, ${y}px)`;
+                touchTarget.setAttribute('data-x', x);
+                touchTarget.setAttribute('data-y', y);
+                updateArrow();
+            });
+
+            block.addEventListener('touchend', (event) => {
+                console.log('Touch end:', block.dataset.id);
+                touchTarget.classList.remove('active');
+                const currentTime = new Date().getTime();
+                if (!isDragging) {
+                    if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
+                        console.log('Double tap detected, selecting:', block.dataset.id);
+                        clearTimeout(singleTapTimeout);
+                        selectBlock(block);
+                    } else {
+                        console.log('Single tap detected, scheduling window open for:', block.dataset.id);
+                        singleTapTimeout = setTimeout(() => {
+                            console.log('Opening window after delay for:', block.dataset.id);
+                            openCodeWindow(block.dataset.id);
+                        }, 300);
+                    }
+                    lastTapTime = currentTime;
+                    lastTappedBlock = block;
+                }
+                touchTarget = null;
+                isDragging = false;
+            });
+
+            block.addEventListener('click', (event) => {
+                event.preventDefault();
+                console.log('Click:', block.dataset.id);
+                if (selectedBlock) selectedBlock.classList.remove('active');
+                selectedBlock = block;
+                selectedBlock.classList.add('active');
+                selectedBlock.focus();
+                openCodeWindow(block.dataset.id);
+            });
+
+            block.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+                console.log('Double click detected, selecting:', block.dataset.id);
+                selectBlock(block);
+            });
+
+            block.addEventListener('focus', () => {
+                if (selectedBlock) selectedBlock.classList.remove('active');
+                selectedBlock = block;
+                selectedBlock.classList.add('active');
+            });
+        });
+
+        function selectBlock(block) {
+            if (selectedBlocks.includes(block)) return;
+            if (selectedBlocks.length >= 2) {
+                selectedBlocks.forEach(b => b.classList.remove('selected'));
+                selectedBlocks = [];
+            }
+            selectedBlocks.push(block);
+            block.classList.add('selected');
+            updateArrow();
         }
 
         // Keyboard navigation
         let selectedBlock = null;
         document.addEventListener('keydown', (event) => {
             if (!selectedBlock) return;
+            event.preventDefault(); // Prevent browser scroll
+            console.log('Keydown:', event.key, selectedBlock.dataset.id);
 
             const x = parseFloat(selectedBlock.getAttribute('data-x')) || 0;
             const y = parseFloat(selectedBlock.getAttribute('data-y')) || 0;
@@ -212,6 +488,10 @@
                 case 'ArrowRight':
                     selectedBlock.setAttribute('data-x', x + step);
                     break;
+                case 'Enter':
+                    console.log('Enter key pressed, opening window for:', selectedBlock.dataset.id);
+                    openCodeWindow(selectedBlock.dataset.id);
+                    break;
             }
 
             selectedBlock.style.transform = `translate(${selectedBlock.getAttribute('data-x')}px, ${selectedBlock.getAttribute('data-y')}px)`;
@@ -221,27 +501,44 @@
             const canvas = document.querySelector('.canvas').getBoundingClientRect();
             selectedBlock.setAttribute('data-x', Math.max(0, Math.min(x, canvas.width - rect.width)));
             selectedBlock.setAttribute('data-y', Math.max(0, Math.min(y, canvas.height - rect.height)));
+            updateArrow();
         });
 
-        // Select block on click or focus
-        document.querySelectorAll('.block').forEach(block => {
-            block.addEventListener('click', () => {
-                if (selectedBlock) selectedBlock.classList.remove('active');
-                selectedBlock = block;
-                selectedBlock.classList.add('active');
-            });
-            block.addEventListener('focus', () => {
-                if (selectedBlock) selectedBlock.classList.remove('active');
-                selectedBlock = block;
-                selectedBlock.classList.add('active');
-            });
+        // Keep focus within canvas
+        document.querySelector('.canvas').addEventListener('click', () => {
+            if (!selectedBlock) {
+                const firstBlock = document.querySelector('.block');
+                if (firstBlock) {
+                    firstBlock.focus();
+                    selectedBlock = firstBlock;
+                    selectedBlock.classList.add('active');
+                }
+            }
         });
 
-        // Toggle module status (mock)
-        function toggleModule(moduleId) {
-            const block = document.querySelector(`[data-id="${moduleId}"]`);
-            const status = block.querySelector('p:nth-child(2)');
-            status.textContent = status.textContent.includes('Active') ? 'Status: Inactive' : 'Status: Active';
+        // Open glass window with code and explanation
+        function openCodeWindow(moduleId) {
+            console.log('Opening code window for:', moduleId);
+            const snippet = codeSnippets[moduleId];
+            if (!snippet) {
+                console.error('No snippet found for moduleId:', moduleId);
+                return;
+            }
+            const content = document.getElementById('codeContent');
+            content.innerHTML = `
+                <textarea>${snippet.code}</textarea>
+                <div class="math-explanation">${snippet.explanation}</div>
+            `;
+            const codeWindow = document.getElementById('codeWindow');
+            codeWindow.classList.remove('hidden');
+            console.log('Code window opened, hidden class removed');
+        }
+
+        // Close glass window
+        function closeCodeWindow() {
+            const codeWindow = document.getElementById('codeWindow');
+            codeWindow.classList.add('hidden');
+            console.log('Code window closed');
         }
     </script>
 </body>
