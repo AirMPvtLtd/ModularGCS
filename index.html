@@ -174,7 +174,7 @@
                     <polygon points="0 0, 10 3.5, 0 7" fill="#ffff00" />
                 </marker>
             </defs>
-            <line id="connectionArrow" x1="0" y1="0" x2="0" y2="0" stroke="#ffff00" stroke-width="2" marker-end="url(#arrowhead)" visibility="hidden" />
+            <!-- Arrows will be dynamically added here -->
         </svg>
         <div class="block" data-id="logger" style="left: 50px; top: 100px;" tabindex="0">
             <h3 class="text-sm font-bold">Logger</h3>
@@ -299,7 +299,7 @@ static float prev_error = 0;`,
                     end(event) {
                         console.log('Drag end:', event.target.dataset.id);
                         event.target.classList.remove('active');
-                        updateArrow();
+                        updateArrows();
                     }
                 }
             });
@@ -312,7 +312,7 @@ static float prev_error = 0;`,
             target.style.transform = `translate(${x}px, ${y}px)`;
             target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
-            updateArrow();
+            updateArrows();
         }
 
         // Selection and arrow logic
@@ -321,11 +321,17 @@ static float prev_error = 0;`,
         let lastTappedBlock = null;
         let singleTapTimeout = null;
 
-        function updateArrow() {
-            const arrow = document.getElementById('connectionArrow');
-            if (selectedBlocks.length === 2) {
-                const block1 = selectedBlocks[0];
-                const block2 = selectedBlocks[1];
+        function updateArrows() {
+            const svg = document.querySelector('.arrow');
+            // Clear existing arrows
+            while (svg.childNodes.length > 1) { // Keep <defs>
+                svg.removeChild(svg.lastChild);
+            }
+
+            // Draw arrows for each pair (n to n+1)
+            for (let i = 0; i < selectedBlocks.length - 1; i++) {
+                const block1 = selectedBlocks[i];
+                const block2 = selectedBlocks[i + 1];
                 const rect1 = block1.getBoundingClientRect();
                 const rect2 = block2.getBoundingClientRect();
                 const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
@@ -358,13 +364,16 @@ static float prev_error = 0;`,
                 x2 = closest.x2;
                 y2 = closest.y2;
 
-                arrow.setAttribute('x1', x1);
-                arrow.setAttribute('y1', y1);
-                arrow.setAttribute('x2', x2);
-                arrow.setAttribute('y2', y2);
-                arrow.setAttribute('visibility', 'visible');
-            } else {
-                arrow.setAttribute('visibility', 'hidden');
+                // Create new arrow
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#ffff00');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                svg.appendChild(line);
             }
         }
 
@@ -404,7 +413,7 @@ static float prev_error = 0;`,
                 touchTarget.style.transform = `translate(${x}px, ${y}px)`;
                 touchTarget.setAttribute('data-x', x);
                 touchTarget.setAttribute('data-y', y);
-                updateArrow();
+                updateArrows();
             });
 
             block.addEventListener('touchend', (event) => {
@@ -413,9 +422,9 @@ static float prev_error = 0;`,
                 const currentTime = new Date().getTime();
                 if (!isDragging) {
                     if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
-                        console.log('Double tap detected, selecting:', block.dataset.id);
+                        console.log('Double tap detected:', block.dataset.id);
                         clearTimeout(singleTapTimeout);
-                        selectBlock(block);
+                        toggleBlockSelection(block);
                     } else {
                         console.log('Single tap detected, scheduling window open for:', block.dataset.id);
                         singleTapTimeout = setTimeout(() => {
@@ -442,8 +451,8 @@ static float prev_error = 0;`,
 
             block.addEventListener('dblclick', (event) => {
                 event.preventDefault();
-                console.log('Double click detected, selecting:', block.dataset.id);
-                selectBlock(block);
+                console.log('Double click detected:', block.dataset.id);
+                toggleBlockSelection(block);
             });
 
             block.addEventListener('focus', () => {
@@ -453,15 +462,18 @@ static float prev_error = 0;`,
             });
         });
 
-        function selectBlock(block) {
-            if (selectedBlocks.includes(block)) return;
-            if (selectedBlocks.length >= 2) {
-                selectedBlocks.forEach(b => b.classList.remove('selected'));
-                selectedBlocks = [];
+        function toggleBlockSelection(block) {
+            const index = selectedBlocks.indexOf(block);
+            if (index !== -1) {
+                console.log('Deselecting block:', block.dataset.id);
+                selectedBlocks.splice(index, 1);
+                block.classList.remove('selected');
+            } else {
+                console.log('Selecting block:', block.dataset.id);
+                selectedBlocks.push(block);
+                block.classList.add('selected');
             }
-            selectedBlocks.push(block);
-            block.classList.add('selected');
-            updateArrow();
+            updateArrows();
         }
 
         // Keyboard navigation
@@ -501,7 +513,7 @@ static float prev_error = 0;`,
             const canvas = document.querySelector('.canvas').getBoundingClientRect();
             selectedBlock.setAttribute('data-x', Math.max(0, Math.min(x, canvas.width - rect.width)));
             selectedBlock.setAttribute('data-y', Math.max(0, Math.min(y, canvas.height - rect.height)));
-            updateArrow();
+            updateArrows();
         });
 
         // Keep focus within canvas
