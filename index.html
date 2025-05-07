@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AiRM Fateh Nano Drone: Math Learning Platform</title>
     <style>
-        /* Embedded Tailwind CSS (subset) */
         *, ::before, ::after { box-sizing: border-box; }
         body { margin: 0; }
         .flex { display: flex; }
@@ -18,7 +17,6 @@
         .text-xs { font-size: 0.75rem; }
         .font-bold { font-weight: 700; }
         .rounded { border-radius: 0.25rem; }
-        .mt-2 { margin-top: 0.5rem; }
         .mr-2 { margin-right: 0.5rem; }
         .w-3 { width: 0.75rem; }
         .h-3 { height: 0.75rem; }
@@ -26,9 +24,7 @@
         .bg-green-500 { background-color: #10b981; }
         .fixed { position: fixed; }
         .z-50 { z-index: 50; }
-        .hidden { display: none; }
 
-        /* Custom Cyberpunk Styles */
         :root {
             --primary: #00f0ff;
             --secondary: #ff3e7f;
@@ -39,15 +35,14 @@
             font-family: 'Share Tech Mono', monospace;
             color: #e0e0ff;
             margin: 0;
-            overflow: hidden;
-            height: 100vh;
         }
         .canvas {
             position: relative;
             width: 100vw;
             height: 100vh;
+            min-height: 1200px;
             background: #000;
-            overflow: hidden;
+            overflow-y: auto;
         }
         .grid {
             position: absolute;
@@ -75,7 +70,6 @@
             user-select: none;
             touch-action: manipulation;
             pointer-events: auto;
-            outline: none;
         }
         .block:hover {
             background: rgba(0, 240, 255, 0.2);
@@ -90,54 +84,6 @@
             border-color: #ffff00;
             box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
         }
-        .glass-window {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 80vh;
-            background: rgba(0, 240, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
-            color: var(--primary);
-            padding: 20px;
-            z-index: 400;
-            overflow-y: auto;
-        }
-        .glass-window textarea {
-            width: 100%;
-            height: 50%;
-            font-size: 12px;
-            font-family: 'Share Tech Mono', monospace;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 10px;
-            resize: none;
-            outline: none;
-        }
-        .math-explanation {
-            font-size: 12px;
-            color: #e0e0ff;
-            margin-top: 10px;
-        }
-        .close-button {
-            background: rgba(255, 62, 127, 0.2);
-            border: 1px solid var(--secondary);
-            color: var(--secondary);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            cursor: pointer;
-            float: right;
-        }
-        .close-button:hover {
-            background: rgba(255, 62, 127, 0.3);
-        }
         .header {
             position: fixed;
             top: 0;
@@ -150,10 +96,143 @@
             position: absolute;
             z-index: 10;
             pointer-events: none;
+            overflow: visible;
+            transform-box: fill-box;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            width: 50vw;
+            height: 50vh;
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.25rem;
+        }
+        .modal-section {
+            flex: 1;
+            padding: 10px;
+        }
+        .modal-section:first-child {
+            border-right: 1px solid rgba(0, 240, 255, 0.3);
+        }
+        .modal-section textarea {
+            width: 100%;
+            height: 80%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.875rem;
+            padding: 10px;
+            resize: none;
+            border-radius: 4px;
+        }
+        .modal-section .equations {
+            font-size: 0.875rem;
+            color: var(--primary);
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+        .close-modal:hover {
+            color: var(--secondary);
+        }
+        #buildButton {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 200;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        #buildButton:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
+        }
+        #buildStatus {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #10b981;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.25rem;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 250;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #buildStatus.error {
+            color: #ef4444;
+        }
+        #buildStatus.show {
+            opacity: 1;
+        }
+        #buildStatus.fade-out {
+            opacity: 0;
+        }
+        #deepDiveButton {
+            display: none;
+            margin: 10px auto;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        #deepDiveButton:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/interactjs@1.10.27/dist/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
 <body>
     <div class="header p-4 flex justify-between items-center">
@@ -170,165 +249,441 @@
         <div class="grid"></div>
         <svg class="arrow" width="100%" height="100%">
             <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="#ffff00" />
+                <marker id="arrowhead" markerWidth="15" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                    <polygon points="0 0, 15 5, 0 10" fill="#ffff00" />
                 </marker>
             </defs>
-            <!-- Arrows will be dynamically added here -->
         </svg>
-        <div class="block" data-id="logger" style="left: 50px; top: 100px;" tabindex="0">
-            <h3 class="text-sm font-bold">Logger</h3>
+        <div class="block" data-id="initialize_system" style="left: 50px; top: 100px;">
+            <h3 class="text-sm font-bold">Initialize System</h3>
             <p class="text-xs">Status: Active</p>
         </div>
-        <div class="block" data-id="sensor" style="left: 350px; top: 100px;" tabindex="0">
-            <h3 class="text-sm font-bold">Sensor</h3>
+        <div class="block" data-id="log_data" style="left: 50px; top: 180px;">
+            <h3 class="text-sm font-bold">Log Data</h3>
             <p class="text-xs">Status: Active</p>
         </div>
-        <div class="block" data-id="control" style="left: 650px; top: 100px;" tabindex="0">
-            <h3 class="text-sm font-bold">Control</h3>
+        <div class="block" data-id="read_sensor_data" style="left: 50px; top: 260px;">
+            <h3 class="text-sm font-bold">Read Sensor Data</h3>
             <p class="text-xs">Status: Active</p>
         </div>
-        <div class="block" data-id="motor" style="left: 200px; top: 350px;" tabindex="0">
-            <h3 class="text-sm font-bold">Motor</h3>
+        <div class="block" data-id="calibrate_sensor" style="left: 50px; top: 340px;">
+            <h3 class="text-sm font-bold">Calibrate Sensor</h3>
             <p class="text-xs">Status: Active</p>
         </div>
-        <div class="block" data-id="communication" style="left: 500px; top: 350px;" tabindex="0">
-            <h3 class="text-sm font-bold">Communication</h3>
+        <div class="block" data-id="fuse_sensor_data" style="left: 50px; top: 420px;">
+            <h3 class="text-sm font-bold">Fuse Sensor Data</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="set_control_targets" style="left: 50px; top: 500px;">
+            <h3 class="text-sm font-bold">Set Control Targets</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="compute_pid_control" style="left: 50px; top: 580px;">
+            <h3 class="text-sm font-bold">Compute PID Control</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="auto_tune_pid" style="left: 50px; top: 660px;">
+            <h3 class="text-sm font-bold">Auto-Tune PID</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="drive_motors" style="left: 50px; top: 740px;">
+            <h3 class="text-sm font-bold">Drive Motors</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="calibrate_motor_trim" style="left: 50px; top: 820px;">
+            <h3 class="text-sm font-bold">Calibrate Motor Trim</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="handle_communication" style="left: 50px; top: 900px;">
+            <h3 class="text-sm font-bold">Handle Communication</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="monitor_battery" style="left: 50px; top: 980px;">
+            <h3 class="text-sm font-bold">Monitor Battery</h3>
+            <p class="text-xs">Status: Active</p>
+        </div>
+        <div class="block" data-id="run_main_loop" style="left: 50px; top: 1060px;">
+            <h3 class="text-sm font-bold">Run Main Loop</h3>
             <p class="text-xs">Status: Active</p>
         </div>
     </div>
-    <div class="glass-window hidden" id="codeWindow">
-        <button class="close-button" onclick="closeCodeWindow()">Close</button>
-        <div id="codeContent"></div>
+    <button id="buildButton">Build</button>
+    <div id="buildStatus">
+        <span id="statusMessage"></span>
+        <button id="deepDiveButton">Deep Dive</button>
+    </div>
+    <div class="modal" id="blockModal">
+        <div class="modal-content">
+            <button class="close-modal">×</button>
+            <div class="modal-section">
+                <h3 id="modalTitle"></h3>
+                <textarea id="modalCode"></textarea>
+            </div>
+            <div class="modal-section">
+                <h3>Equations</h3>
+                <div class="equations" id="modalEquations"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Code snippets for each block
-        const codeSnippets = {
-            logger: {
-                code: `float calculate_average(float readings[], int count) {
-    float sum = 0;
-    for (int i = 0; i < count; i++) {
-        sum += readings[i]; // Add each reading
-    }
-    float average = sum / count; // Divide by count to get mean
-    // Math: Average = (sum of values) / (number of values)
-    return average;
-}`,
-                explanation: "Math: Averages smooth sensor data. Try summing 5 numbers and dividing by 5!"
-            },
-            sensor: {
-                code: `float get_roll(float ax, float ay, float az) {
-    // Math: Roll angle = atan2(ay, sqrt(ax^2 + az^2)) * 180 / PI
-    float roll = atan2(ay, sqrt(ax * ax + az * az)) * 57.2958;
-    // Student: Try adjusting the formula
-    return roll;
-}
-float kalman_filter(float new_angle, float old_angle, float q, float r) {
-    float predicted = old_angle;
-    float gain = q / (q + r); // Weight for smoothing
-    float angle = predicted + gain * (new_angle - predicted);
-    // Student: Change q and r
-    return angle;
-}`,
-                explanation: "Math: Trigonometry finds angles. Kalman filter averages noisy data. Try q=0.01, r=0.03!"
-            },
-            control: {
-                code: `float pid_update(float target, float current, float dt) {
-    float kp = 1.2, ki = 0.05, kd = 0.25; // Gains
-    float error = target - current; // Error = desired - actual
-    static float integral = 0;
-    integral += error * dt; // Sum errors over time
-    float derivative = (error - prev_error) / dt; // Rate of change
-    float output = kp * error + ki * integral + kd * derivative;
-    prev_error = error;
-    // Math: Output = P*error + I*integral + D*derivative
-    return output;
-}
-static float prev_error = 0;`,
-                explanation: "Math: PID uses algebra and calculus to stabilize the drone. Try kp=1.5!"
-            },
-            motor: {
-                code: `void set_motor_speeds(float roll, float pitch, float yaw, float throttle) {
-    // Math: Linear equations to balance drone
-    float m1 = throttle - pitch + roll + yaw; // Front-left
-    float m2 = throttle + pitch - roll - yaw; // Front-right
-    float m3 = throttle - pitch - roll + yaw; // Rear-left
-    float m4 = throttle + pitch + roll - yaw; // Rear-right
-    // Student: Adjust coefficients
-}`,
-                explanation: "Math: Equations mix signals to control motors. Try changing pitch to 0.5*pitch!"
-            },
-            communication: {
-                code: `void send_telemetry(float roll, float pitch, float yaw, float battery) {
-    // Math: Scale and round numbers
-    int roll_int = roll * 10; // Example: 45.67 -> 456
-    int pitch_int = pitch * 10;
-    int yaw_int = yaw * 10;
-    int battery_int = battery;
-    // Student: Try scaling by 100
-}`,
-                explanation: "Math: Scaling converts decimals to integers for apps. Try roll * 100!"
-            }
-        };
-
-        // Initialize interact.js for drag-and-drop
-        interact('.block')
-            .draggable({
-                inertia: false,
-                modifiers: [
-                    interact.modifiers.restrictRect({
-                        restriction: 'parent',
-                        endOnly: true
-                    }),
-                    interact.modifiers.snap({
-                        targets: [
-                            interact.snappers.grid({ x: 10, y: 10 })
-                        ],
-                        range: Infinity,
-                        relativePoints: [{ x: 0, y: 0 }]
-                    })
-                ],
-                listeners: {
-                    move: dragMoveListener,
-                    start(event) {
-                        console.log('Drag start:', event.target.dataset.id);
-                        event.target.classList.add('active');
-                        event.target.focus();
-                    },
-                    end(event) {
-                        console.log('Drag end:', event.target.dataset.id);
-                        event.target.classList.remove('active');
-                        updateArrows();
-                    }
-                }
-            });
-
-        function dragMoveListener(event) {
-            const target = event.target;
-            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-            target.style.transform = `translate(${x}px, ${y}px)`;
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
-            updateArrows();
-        }
-
-        // Selection and arrow logic
         let selectedBlocks = [];
         let lastTapTime = 0;
         let lastTappedBlock = null;
-        let singleTapTimeout = null;
+        let tapTimeout = null;
+        let isDragging = false;
+        let errorLog = '';
+
+        const blockData = {
+            initialize_system: {
+                code: `void DroneSystem::init() {
+    logger.init();
+    sensor.init();
+    motor.init();
+    comm.init();
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_channel_atten(ADC_CHANNEL, ADC_ATTEN_DB_11);
+    logger.log("System initialized");
+}`,
+                equations: `\\[ \\text{System State} = f(\\text{Hardware Config}, \\text{Software Init}) \\]
+\\[ \\text{ADC Resolution} = 2^{12} = 4096 \\]`
+            },
+            log_data: {
+                code: `void Logger::log(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    esp_log_write(ESP_LOG_INFO, "Drone", format, args);
+    va_end(args);
+}`,
+                equations: `\\[ \\text{Log Output} = \\text{Format}(\\text{Timestamp}, \\text{Data}) \\]`
+            },
+            read_sensor_data: {
+                code: `void MPU6050Sensor::read_raw(float& ax, float& ay, float& az, float& gx, float& gy, float& gz) {
+    uint8_t buffer[14];
+    i2c_master_write_read_device(I2C_NUM_0, MPU6050_ADDR, (uint8_t[]){0x3B}, 1, buffer, 14, portMAX_DELAY);
+    int16_t accel_x = (buffer[0] << 8) | buffer[1];
+    int16_t accel_y = (buffer[2] << 8) | buffer[3];
+    int16_t accel_z = (buffer[4] << 8) | buffer[5];
+    int16_t gyro_x = (buffer[8] << 8) | buffer[9];
+    int16_t gyro_y = (buffer[10] << 8) | buffer[11];
+    int16_t gyro_z = (buffer[12] << 8) | buffer[13];
+    ax = accel_x / 16384.0 - accel_offsets[0];
+    ay = accel_y / 16384.0 - accel_offsets[1];
+    az = accel_z / 16384.0 - accel_offsets[2];
+    gx = gyro_x / 131.0 - gyro_offsets[0];
+    gy = gyro_y / 131.0 - gyro_offsets[1];
+    gz = gyro_z / 131.0 - gyro_offsets[2];
+}`,
+                equations: `\\[ a_x = \\frac{\\text{Raw Accel}_x}{16384} - a_{x0} \\]
+\\[ g_x = \\frac{\\text{Raw Gyro}_x}{131} - g_{x0} \\]`
+            },
+            calibrate_sensor: {
+                code: `void MPU6050Sensor::calibrate(int samples) {
+    logger->log("Calibrating MPU6050...");
+    float accel_sums[3] = {0}, gyro_sums[3] = {0};
+    for (int i = 0; i < samples; i++) {
+        float ax, ay, az, gx, gy, gz;
+        read_raw(ax, ay, az, gx, gy, gz);
+        accel_sums[0] += ax; accel_sums[1] += ay; accel_sums[2] += az;
+        gyro_sums[0] += gx; gyro_sums[1] += gy; gyro_sums[2] += gz;
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+    for (int i = 0; i < 3; i++) {
+        accel_offsets[i] = accel_sums[i] / samples;
+        gyro_offsets[i] = gyro_sums[i] / samples;
+    }
+    accel_offsets[2] -= 1.0;
+    logger->log("Calibration done: Accel offsets [%.3f, %.3f, %.3f], Gyro offsets [%.3f, %.3f, %.3f]",
+                accel_offsets[0], accel_offsets[1], accel_offsets[2],
+                gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
+}`,
+                equations: `\\[ a_{x0} = \\frac{1}{N} \\sum_{i=1}^N a_{xi} \\]
+\\[ a_{z0} = \\frac{1}{N} \\sum_{i=1}^N a_{zi} - g \\]`
+            },
+            fuse_sensor_data: {
+                code: `void MPU6050Sensor::update(float dt) {
+    float ax, ay, az, gx, gy, gz;
+    read_raw(ax, ay, az, gx, gy, gz);
+    float accel_roll = atan2(ay, sqrt(ax*ax + az*az)) * 180 / M_PI;
+    float accel_pitch = atan2(ax, sqrt(ay*ay + az*az)) * 180 / M_PI;
+    angles[0] = kalman_filter(accel_roll, gy, angles[0], dt);
+    angles[1] = kalman_filter(accel_pitch, gx, angles[1], dt);
+    angles[2] += gz * dt;
+    angles[0] = std::max(std::min(angles[0], 90.0f), -90.0f);
+    angles[1] = std::max(std::min(angles[1], 90.0f), -90.0f);
+    if (fabs(gx) > 250 || fabs(gy) > 250 || fabs(gz) > 250) {
+        logger->log("Gyro saturation detected");
+    }
+}
+float MPU6050Sensor::kalman_filter(float accel_angle, float gyro_rate, float prev_angle, float dt) {
+    float predicted_angle = prev_angle + gyro_rate * dt;
+    float predicted_variance = kalman_q;
+    float kalman_gain = predicted_variance / (predicted_variance + kalman_r);
+    float angle = predicted_angle + kalman_gain * (accel_angle - predicted_angle);
+    return angle;
+}`,
+                equations: `\\[ \\hat{x}_k = \\hat{x}_{k|k-1} + K_k (z_k - \\hat{x}_{k|k-1}) \\]
+\\[ K_k = \\frac{P_{k|k-1}}{P_{k|k-1} + R} \\]`
+            },
+            set_control_targets: {
+                code: `void Control::set_targets(float pitch, float roll, float yaw, float height) {
+    targets[0] = std::max(std::min(pitch, 45.0f), -45.0f);
+    targets[1] = std::max(std::min(roll, 45.0f), -45.0f);
+    targets[2] = yaw;
+    targets[3] = std::max(std::min(height, 2.0f), 0.0f);
+    logger->log("Targets set: P=%.1f, R=%.1f, Y=%.1f, H=%.1f", pitch, roll, yaw, height);
+}`,
+                equations: `\\[ \\theta_{\\text{target}} = \\max(\\min(\\theta, 45), -45) \\]
+\\[ h_{\\text{target}} = \\max(\\min(h, 2), 0) \\]`
+            },
+            compute_pid_control: {
+                code: `float PIDController::update(float target, float current, float gyro_rate, float dt) {
+    float error = target - current;
+    integral += error * dt;
+    integral = std::max(std::min(integral, 100.0f), -100.0f);
+    float derivative = (error - prev_error) / dt;
+    float output = kp * error + ki * integral + kd * derivative;
+    prev_error = error;
+    return std::max(std::min(output, 100.0f), -100.0f);
+}
+void Control::update(MPU6050Sensor& sensor, float dt, float& roll_out, float& pitch_out, float& yaw_out, float& height_out) {
+    float roll, pitch, yaw;
+    sensor.get_angles(roll, pitch, yaw);
+    float ax, ay, az, gx, gy, gz;
+    sensor.read_raw(ax, ay, az, gx, gy, gz);
+    roll_out = roll_pid.update(targets[1], roll, gx, dt);
+    pitch_out = pitch_pid.update(targets[0], pitch, gy, dt);
+    yaw_out = yaw_pid.update(targets[2], yaw, gz, dt);
+    height_out = height_pid.update(targets[3], 0, 0, dt);
+    logger->log("PID: R=%.2f, P=%.2f, Y=%.2f, H=%.2f", roll_out, pitch_out, yaw_out, height_out);
+}`,
+                equations: `\\[ u(t) = K_p e(t) + K_i \\int e(t) dt + K_d \\frac{de(t)}{dt} \\]
+\\[ e(t) = \\text{Target} - \\text{Current} \\]`
+            },
+            auto_tune_pid: {
+                code: `float Control::compute_cost(MPU6050Sensor& sensor, float dt, float duration) {
+    float throttle = 30;
+    float angle_errors[1000];
+    int error_count = 0;
+    float start_time = esp_timer_get_time() / 1000000.0;
+    while ((esp_timer_get_time() / 1000000.0 - start_time) < duration && error_count < 1000) {
+        float roll, pitch, yaw;
+        sensor.get_angles(roll, pitch, yaw);
+        float roll_out, pitch_out, yaw_out, height_out;
+        update(sensor, dt, roll_out, pitch_out, yaw_out, height_out);
+        if (fabs(roll) > 45 || fabs(pitch) > 45) {
+            logger->log("Auto-tune: Extreme angle");
+            return INFINITY;
+        }
+        angle_errors[error_count++] = fabs(roll - targets[1]) + fabs(pitch - targets[0]) + fabs(yaw - targets[2]);
+        vTaskDelay((int)(dt * 1000) / portTICK_PERIOD_MS);
+    }
+    float variance = 0;
+    float mean = 0;
+    for (int i = 0; i < error_count; i++) mean += angle_errors[i];
+    mean /= error_count;
+    for (int i = 0; i < error_count; i++) variance += (angle_errors[i] - mean) * (angle_errors[i] - mean);
+    variance /= error_count;
+    logger->log("Auto-tune cost: %.2f", variance);
+    return variance;
+}
+void Control::auto_tune(MPU6050Sensor& sensor, float dt, int max_iterations) {
+    float best_cost = INFINITY;
+    PIDController best_pids[4] = {roll_pid, pitch_pid, yaw_pid, height_pid};
+    float temp = 10.0, cooling_rate = 0.95;
+    for (int i = 0; i < max_iterations; i++) {
+        logger->log("Auto-tune iteration %d/%d", i + 1, max_iterations);
+        PIDController new_pids[4] = {
+            PIDController(roll_pid), PIDController(pitch_pid),
+            PIDController(yaw_pid), PIDController(height_pid)
+        };
+        new_pids[0].set_gains(roll_pid.kp + (random() % 1000 / 1000.0 - 0.5) * 0.4, roll_pid.ki, roll_pid.kd);
+        new_pids[1].set_gains(pitch_pid.kp + (random() % 1000 / 1000.0 - 0.5) * 0.4, pitch_pid.ki, roll_pid.kd);
+        new_pids[2].set_gains(yaw_pid.kp + (random() % 1000 / 1000.0 - 0.5) * 0.2, yaw_pid.ki, yaw_pid.kd);
+        new_pids[3].set_gains(height_pid.kp + (random() % 1000 / 1000.0 - 0.5) * 0.8, height_pid.ki, height_pid.kd);
+        roll_pid = new_pids[0]; pitch_pid = new_pids[1];
+        yaw_pid = new_pids[2]; height_pid = new_pids[3];
+        float cost = compute_cost(sensor, dt);
+        if (cost < best_cost || (random() % 1000 / 1000.0) < exp(-(cost - best_cost) / temp)) {
+            best_cost = cost;
+            best_pids[0] = roll_pid; best_pids[1] = pitch_pid;
+            best_pids[2] = yaw_pid; best_pids[3] = height_pid;
+            logger->log("Accepted: Cost=%.2f, PID=[(%.2f,%.2f,%.2f), ...]", best_cost,
+                        roll_pid.kp, roll_pid.ki, roll_pid.kd);
+        }
+        temp *= cooling_rate;
+    }
+    roll_pid = best_pids[0]; pitch_pid = best_pids[1];
+    yaw_pid = best_pids[2]; height_pid = best_pids[3];
+}`,
+                equations: `\\[ J = \\frac{1}{N} \\sum_{i=1}^N (\\theta_i - \\theta_{\\text{target}})^2 \\]
+\\[ P(\\text{accept}) = e^{-\\frac{\\Delta J}{T}} \\]`
+            },
+            drive_motors: {
+                code: `void MotorDriver::set_speeds(float m1, float m2, float m3, float m4) {
+    motor_speeds[0] = std::max(std::min(m1 + trim[0], 65535.0f), 0.0f);
+    motor_speeds[1] = std::max(std::min(m2 + trim[1], 65535.0f), 0.0f);
+    motor_speeds[2] = std::max(std::min(m3 + trim[2], 65535.0f), 0.0f);
+    motor_speeds[3] = std::max(std::min(m4 + trim[3], 65535.0f), 0.0f);
+    for (int i = 0; i < 4; i++) {
+        pwm_set_duty(motor_pins[i], (uint16_t)motor_speeds[i]);
+    }
+    logger->log("Motor speeds: [%.0f, %.0f, %.0f, %.0f]", motor_speeds[0], motor_speeds[1], motor_speeds[2], motor_speeds[3]);
+}`,
+                equations: `\\[ m_i = T + u_{\\text{pitch}} + u_{\\text{roll}} + u_{\\text{yaw}} + t_i \\]
+\\[ m_i = \\max(\\min(m_i, 65535), 0) \\]`
+            },
+            calibrate_motor_trim: {
+                code: `void MotorDriver::calibrate_trim(MPU6050Sensor& sensor, float dt, float duration) {
+    logger->log("Calibrating motor trim...");
+    float base_throttle = 65535 * 0.25;
+    set_speeds(base_throttle, base_throttle, base_throttle, base_throttle);
+    float pos_x = 0, pos_y = 0, vel_x = 0, vel_y = 0;
+    float start_time = esp_timer_get_time() / 1000000.0;
+    while (esp_timer_get_time() / 1000000.0 - start_time < duration) {
+        float ax, ay, az, gx, gy, gz;
+        sensor.read_raw(ax, ay, az, gx, gy, gz);
+        vel_x += ax * 9.81 * dt * 0.99;
+        vel_y += ay * 9.81 * dt * 0.99;
+        pos_x += vel_x * dt;
+        pos_y += vel_y * dt;
+        vTaskDelay((int)(dt * 1000) / portTICK_PERIOD_MS);
+    }
+    set_speeds(0, 0, 0, 0);
+    trim[0] = -pos_y * 100;
+    trim[1] = -pos_x * 100;
+    trim[2] = pos_y * 100;
+    trim[3] = pos_x * 100;
+    for (int i = 0; i < 4; i++) trim[i] = std::max(std::min(trim[i], 1000.0f), -1000.0f);
+    logger->log("Trim: [%.0f, %.0f, %.0f, %.0f]", trim[0], trim[1], trim[2], trim[3]);
+}`,
+                equations: `\\[ v_x = v_x + a_x \\cdot g \\cdot \\Delta t \\cdot 0.99 \\]
+\\[ p_x = p_x + v_x \\cdot \\Delta t \\]`
+            },
+            handle_communication: {
+                code: `void Communication::init() {
+    wifi_init_softap();
+    udp = udp_new();
+    udp_bind(udp, IPADDR_ANY, UDP_PORT);
+    udp_recv(udp, udp_callback, this);
+    logger->log("Wi-Fi and UDP initialized");
+}
+void Communication::parse_command(const char* data, struct udp_pcb* upcb, const ip_addr_t* addr, u16_t port) {
+    if (strstr(data, "arm")) {
+        is_armed = true;
+        logger->log("Drone armed");
+    } else if (strstr(data, "disarm")) {
+        is_armed = false;
+        logger->log("Drone disarmed");
+    } else if (strstr(data, "autotune")) {
+        logger->log("Auto-tune requested");
+    } else if (strstr(data, "set_pid:")) {
+        float kp, ki, kd;
+        sscanf(data, "set_pid:%f,%f,%f", &kp, &ki, &kd);
+        logger->log("Set PID: kp=%.2f, ki=%.2f, kd=%.2f", kp, ki, kd);
+    }
+    struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, 64, PBUF_RAM);
+    snprintf((char*)p->payload, 64, "ack:%s\\n", data);
+    udp_sendto(upcb, p, addr, port);
+    pbuf_free(p);
+}
+void Communication::send_telemetry(float roll, float pitch, float yaw, float height, float battery) {
+    struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, 128, PBUF_RAM);
+    snprintf((char*)p->payload, 128, "R:%.1f,P:%.1f,Y:%.1f,H:%.2f,B:%.0f\\n",
+             roll, pitch, yaw, height, battery);
+    udp_sendto(udp, p, IPADDR_BROADCAST, UDP_PORT + 1);
+    pbuf_free(p);
+}`,
+                equations: `\\[ \\text{Packet Size} = \\sum \\text{Data Fields} \\]
+\\[ \\text{BER} = \\frac{\\text{Errors}}{\\text{Total Bits}} \\]`
+            },
+            monitor_battery: {
+                code: `float DroneSystem::read_battery() {
+    uint32_t adc_reading = 0;
+    for (int i = 0; i < 10; i++) {
+        adc_reading += adc1_get_raw(ADC_CHANNEL);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+    adc_reading /= 10;
+    battery_voltage = (adc_reading / 4095.0) * 3.3 * 2;
+    return std::max(std::min((battery_voltage - 3.0) / (4.2 - 3.0) * 100, 100.0f), 0.0f);
+}`,
+                equations: `\\[ V_{\\text{batt}} = \\frac{\\text{ADC}}{4095} \\cdot 3.3 \\cdot 2 \\]
+\\[ \\text{Battery %} = \\frac{V_{\\text{batt}} - 3.0}{4.2 - 3.0} \\cdot 100 \\]`
+            },
+            run_main_loop: {
+                code: `void DroneSystem::update() {
+    sensor.update(DT);
+    float roll, pitch, yaw;
+    sensor.get_angles(roll, pitch, yaw);
+    if (fabs(roll) > 45 || fabs(pitch) > 45 || read_battery() < 20) {
+        is_armed = false;
+        motor.set_speeds(0, 0, 0, 0);
+        logger->log("Failsafe: Extreme angle or low battery");
+        return;
+    }
+    if (comm.is_armed_state() && is_armed) {
+        float roll_out, pitch_out, yaw_out, height_out;
+        control.update(sensor, DT, roll_out, pitch_out, yaw_out, height_out);
+        float base = throttle * 65535 / 100 + height_out;
+        float m1 = base - pitch_out + roll_out + yaw_out;
+        float m2 = base + pitch_out - roll_out - yaw_out;
+        float m3 = base - pitch_out - roll_out + yaw_out;
+        float m4 = base + pitch_out + roll_out - yaw_out;
+        motor.set_speeds(m1, m2, m3, m4);
+        comm.send_telemetry(roll, pitch, yaw, height_out, battery_voltage);
+    } else {
+        motor.set_speeds(0, 0, 0, 0);
+    }
+}
+void DroneSystem::main_task(void* arg) {
+    DroneSystem* system = (DroneSystem*)arg;
+    system->init();
+    while (true) {
+        system->update();
+        vTaskDelay((int)(DT * 1000) / portTICK_PERIOD_MS);
+    }
+}`,
+                equations: `\\[ T_{\\text{loop}} = \\Delta t = 0.01 \\text{s} \\]
+\\[ m_i = T + u_{\\text{pitch}} + u_{\\text{roll}} + u_{\\text{yaw}} \\]`
+            }
+        };
+
+        function setupInteract() {
+            interact('.block')
+                .draggable({
+                    inertia: false,
+                    modifiers: [
+                        interact.modifiers.restrictRect({ restriction: 'parent', endOnly: true }),
+                        interact.modifiers.snap({ targets: [interact.snappers.grid({ x: 10, y: 10 })], range: Infinity, relativePoints: [{ x: 0, y: 0 }] })
+                    ],
+                    listeners: {
+                        start: (event) => {
+                            isDragging = true;
+                            event.target.classList.add('active');
+                        },
+                        move: (event) => {
+                            const target = event.target;
+                            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+                            target.style.transform = `translate(${x}px, ${y}px)`;
+                            target.setAttribute('data-x', x);
+                            target.setAttribute('data-y', y);
+                            updateArrows();
+                        },
+                        end: (event) => {
+                            isDragging = false;
+                            event.target.classList.remove('active');
+                            updateArrows();
+                        }
+                    }
+                });
+        }
 
         function updateArrows() {
             const svg = document.querySelector('.arrow');
-            // Clear existing arrows
-            while (svg.childNodes.length > 1) { // Keep <defs>
-                svg.removeChild(svg.lastChild);
-            }
+            while (svg.childNodes.length > 1) svg.removeChild(svg.lastChild);
 
-            // Draw arrows for each pair (n to n+1)
             for (let i = 0; i < selectedBlocks.length - 1; i++) {
                 const block1 = selectedBlocks[i];
                 const block2 = selectedBlocks[i + 1];
@@ -336,10 +691,6 @@ static float prev_error = 0;`,
                 const rect2 = block2.getBoundingClientRect();
                 const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
 
-                // Calculate border-to-border points
-                let x1, y1, x2, y2;
-
-                // Determine closest edges
                 const left1 = rect1.left - canvasRect.left;
                 const right1 = rect1.right - canvasRect.left;
                 const top1 = rect1.top - canvasRect.top;
@@ -349,209 +700,195 @@ static float prev_error = 0;`,
                 const top2 = rect2.top - canvasRect.top;
                 const bottom2 = rect2.bottom - canvasRect.top;
 
-                // Find minimum distance between edges
                 const distances = [
-                    { x1: right1, y1: top1 + rect1.height / 2, x2: left2, y2: top2 + rect2.height / 2, dist: Math.abs(right1 - left2) }, // Right1 to Left2
-                    { x1: left1, y1: top1 + rect1.height / 2, x2: right2, y2: top2 + rect2.height / 2, dist: Math.abs(left1 - right2) }, // Left1 to Right2
-                    { x1: left1 + rect1.width / 2, y1: bottom1, x2: left2 + rect2.width / 2, y2: top2, dist: Math.abs(bottom1 - top2) }, // Bottom1 to Top2
-                    { x1: left1 + rect1.width / 2, y1: top1, x2: left2 + rect2.width / 2, y2: bottom2, dist: Math.abs(top1 - bottom2) } // Top1 to Bottom2
+                    { x1: right1, y1: top1 + rect1.height / 2, x2: left2, y2: top2 + rect2.height / 2, dist: Math.abs(right1 - left2) },
+                    { x1: left1, y1: top1 + rect1.height / 2, x2: right2, y2: top2 + rect2.height / 2, dist: Math.abs(left1 - right2) },
+                    { x1: left1 + rect1.width / 2, y1: bottom1, x2: left2 + rect2.width / 2, y2: top2, dist: Math.abs(bottom1 - top2) },
+                    { x1: left1 + rect1.width / 2, y1: top1, x2: left2 + rect2.width / 2, y2: bottom2, dist: Math.abs(top1 - bottom2) }
                 ];
 
-                const closest = distances.reduce((min, curr) => curr.dist < min.dist ? curr : min, distances[0]);
+                const { x1, y1, x2, y2 } = distances.reduce((min, curr) => curr.dist < min.dist ? curr : min, distances[0]);
 
-                x1 = closest.x1;
-                y1 = closest.y1;
-                x2 = closest.x2;
-                y2 = closest.y2;
-
-                // Create new arrow
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', x1);
-                line.setAttribute('y1', y1);
-                line.setAttribute('x2', x2);
-                line.setAttribute('y2', y2);
-                line.setAttribute('stroke', '#ffff00');
-                line.setAttribute('stroke-width', '2');
-                line.setAttribute('marker-end', 'url(#arrowhead)');
-                svg.appendChild(line);
+                if (x1 !== x2 || y1 !== y2) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.setAttribute('stroke', '#ffff00');
+                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('marker-end', 'url(#arrowhead)');
+                    svg.appendChild(line);
+                }
             }
         }
 
-        // Fallback touch event handlers
-        let touchTarget = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isDragging = false;
-        let touchStartPosX = 0;
-        let touchStartPosY = 0;
+        function showModal(block) {
+            const modal = document.getElementById('blockModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalCode = document.getElementById('modalCode');
+            const modalEquations = document.getElementById('modalEquations');
+            const blockTitle = block.querySelector('h3').textContent;
+            const blockId = block.getAttribute('data-id');
 
-        document.querySelectorAll('.block').forEach(block => {
-            block.addEventListener('touchstart', (event) => {
-                event.preventDefault();
-                console.log('Touch start:', block.dataset.id);
-                touchTarget = block;
-                touchStartX = event.touches[0].clientX - (parseFloat(block.getAttribute('data-x')) || 0);
-                touchStartY = event.touches[0].clientY - (parseFloat(block.getAttribute('data-y')) || 0);
-                touchStartPosX = event.touches[0].clientX;
-                touchStartPosY = event.touches[0].clientY;
-                block.classList.add('active');
-                block.focus();
-                isDragging = false;
+            modalTitle.textContent = blockTitle;
+            modalCode.value = blockData[blockId].code;
+            modalEquations.innerHTML = blockData[blockId].equations;
+            modal.style.display = 'flex';
+
+            // Trigger MathJax to render equations
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, modalEquations]);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('blockModal');
+            modal.style.display = 'none';
+        }
+
+        function showBuildStatus(message, isError = false) {
+            const buildStatus = document.getElementById('buildStatus');
+            const statusMessage = document.getElementById('statusMessage');
+            const deepDiveButton = document.getElementById('deepDiveButton');
+
+            statusMessage.textContent = message;
+            buildStatus.classList.toggle('error', isError);
+            deepDiveButton.style.display = isError ? 'block' : 'none';
+            buildStatus.classList.add('show');
+
+            setTimeout(() => {
+                buildStatus.classList.add('fade-out');
+                setTimeout(() => {
+                    buildStatus.classList.remove('show', 'fade-out');
+                }, 500);
+            }, 3000);
+        }
+
+        function handleBuild() {
+            // Simulate build process by concatenating blockData code
+            let mainCpp = '#include <Arduino.h>\n#include <esp_log.h>\n\n';
+            for (const [blockId, data] of Object.entries(blockData)) {
+                mainCpp += `// Block: ${blockId}\n${data.code}\n\n`;
+            }
+
+            // Simulate build success or failure (70% success rate for demo)
+            const isSuccess = Math.random() < 0.7;
+            if (isSuccess) {
+                showBuildStatus('Successfully Built');
+                errorLog = '';
+            } else {
+                errorLog = `Build Error Log:\n` +
+                           `Error: Syntax error in block 'Compute PID Control'\n` +
+                           `Line 5: Undefined reference to 'roll_pid'\n` +
+                           `Suggestion: Ensure PIDController is properly initialized\n` +
+                           `Timestamp: ${new Date().toISOString()}`;
+                showBuildStatus('Build Failed', true);
+            }
+
+            // TODO: Replace with actual build logic (e.g., send mainCpp to a compiler backend)
+        }
+
+        function showDeepDive() {
+            const errorWindow = window.open('', '_blank');
+            errorWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Build Error Details</title>
+                    <style>
+                        body {
+                            background: #000;
+                            font-family: 'Share Tech Mono', monospace;
+                            color: #00f0ff;
+                            margin: 20px;
+                        }
+                        h1 {
+                            font-size: 1.5rem;
+                            color: #00f0ff;
+                        }
+                        pre {
+                            background: rgba(0, 240, 255, 0.1);
+                            border: 1px solid #00f0ff;
+                            padding: 15px;
+                            border-radius: 8px;
+                            white-space: pre-wrap;
+                            font-size: 0.875rem;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Build Error Details</h1>
+                    <pre>${errorLog}</pre>
+                </body>
+                </html>
+            `);
+            errorWindow.document.close();
+        }
+
+        function setupBlockListeners() {
+            document.querySelectorAll('.block').forEach(block => {
+                block.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    handleInteraction(block, false);
+                });
+
+                block.addEventListener('touchstart', (event) => {
+                    event.preventDefault();
+                    handleInteraction(block, true);
+                });
             });
 
-            block.addEventListener('touchmove', (event) => {
-                if (!touchTarget) return;
-                event.preventDefault();
-                console.log('Touch move:', block.dataset.id);
-                const deltaX = Math.abs(event.touches[0].clientX - touchStartPosX);
-                const deltaY = Math.abs(event.touches[0].clientY - touchStartPosY);
-                if (deltaX > 5 || deltaY > 5) {
-                    isDragging = true;
+            document.querySelector('.close-modal').addEventListener('click', closeModal);
+            document.getElementById('blockModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal();
+            });
+
+            document.getElementById('buildButton').addEventListener('click', handleBuild);
+            document.getElementById('deepDiveButton').addEventListener('click', showDeepDive);
+
+            // TODO: Add Upload button to interface with esptool.py or WebSerial
+        }
+
+        function handleInteraction(block, isTouch) {
+            if (isDragging) return;
+
+            const currentTime = new Date().getTime();
+            if (isTouch) {
+                if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
+                    clearTimeout(tapTimeout);
+                    toggleBlockSelection(block);
+                } else {
+                    tapTimeout = setTimeout(() => {
+                        if (!isDragging) showModal(block);
+                    }, 300);
                 }
-                const x = event.touches[0].clientX - touchStartX;
-                const y = event.touches[0].clientY - touchStartY;
-                touchTarget.style.transform = `translate(${x}px, ${y}px)`;
-                touchTarget.setAttribute('data-x', x);
-                touchTarget.setAttribute('data-y', y);
-                updateArrows();
-            });
-
-            block.addEventListener('touchend', (event) => {
-                console.log('Touch end:', block.dataset.id);
-                touchTarget.classList.remove('active');
-                const currentTime = new Date().getTime();
-                if (!isDragging) {
-                    if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
-                        console.log('Double tap detected:', block.dataset.id);
-                        clearTimeout(singleTapTimeout);
-                        toggleBlockSelection(block);
-                    } else {
-                        console.log('Single tap detected, scheduling window open for:', block.dataset.id);
-                        singleTapTimeout = setTimeout(() => {
-                            console.log('Opening window after delay for:', block.dataset.id);
-                            openCodeWindow(block.dataset.id);
-                        }, 300);
-                    }
-                    lastTapTime = currentTime;
-                    lastTappedBlock = block;
-                }
-                touchTarget = null;
-                isDragging = false;
-            });
-
-            block.addEventListener('click', (event) => {
-                event.preventDefault();
-                console.log('Click:', block.dataset.id);
-                if (selectedBlock) selectedBlock.classList.remove('active');
-                selectedBlock = block;
-                selectedBlock.classList.add('active');
-                selectedBlock.focus();
-                openCodeWindow(block.dataset.id);
-            });
-
-            block.addEventListener('dblclick', (event) => {
-                event.preventDefault();
-                console.log('Double click detected:', block.dataset.id);
-                toggleBlockSelection(block);
-            });
-
-            block.addEventListener('focus', () => {
-                if (selectedBlock) selectedBlock.classList.remove('active');
-                selectedBlock = block;
-                selectedBlock.classList.add('active');
-            });
-        });
+                lastTapTime = currentTime;
+                lastTappedBlock = block;
+            } else {
+                showModal(block);
+            }
+        }
 
         function toggleBlockSelection(block) {
             const index = selectedBlocks.indexOf(block);
             if (index !== -1) {
-                console.log('Deselecting block:', block.dataset.id);
                 selectedBlocks.splice(index, 1);
                 block.classList.remove('selected');
             } else {
-                console.log('Selecting block:', block.dataset.id);
                 selectedBlocks.push(block);
                 block.classList.add('selected');
             }
             updateArrows();
         }
 
-        // Keyboard navigation
-        let selectedBlock = null;
-        document.addEventListener('keydown', (event) => {
-            if (!selectedBlock) return;
-            event.preventDefault(); // Prevent browser scroll
-            console.log('Keydown:', event.key, selectedBlock.dataset.id);
-
-            const x = parseFloat(selectedBlock.getAttribute('data-x')) || 0;
-            const y = parseFloat(selectedBlock.getAttribute('data-y')) || 0;
-            const step = 10;
-
-            switch (event.key) {
-                case 'ArrowUp':
-                    selectedBlock.setAttribute('data-y', y - step);
-                    break;
-                case 'ArrowDown':
-                    selectedBlock.setAttribute('data-y', y + step);
-                    break;
-                case 'ArrowLeft':
-                    selectedBlock.setAttribute('data-x', x - step);
-                    break;
-                case 'ArrowRight':
-                    selectedBlock.setAttribute('data-x', x + step);
-                    break;
-                case 'Enter':
-                    console.log('Enter key pressed, opening window for:', selectedBlock.dataset.id);
-                    openCodeWindow(selectedBlock.dataset.id);
-                    break;
-            }
-
-            selectedBlock.style.transform = `translate(${selectedBlock.getAttribute('data-x')}px, ${selectedBlock.getAttribute('data-y')}px)`;
-
-            // Ensure block stays within canvas
-            const rect = selectedBlock.getBoundingClientRect();
-            const canvas = document.querySelector('.canvas').getBoundingClientRect();
-            selectedBlock.setAttribute('data-x', Math.max(0, Math.min(x, canvas.width - rect.width)));
-            selectedBlock.setAttribute('data-y', Math.max(0, Math.min(y, canvas.height - rect.height)));
-            updateArrows();
+        // Initialize
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                setupInteract();
+                setupBlockListeners();
+            }, 1000);
         });
-
-        // Keep focus within canvas
-        document.querySelector('.canvas').addEventListener('click', () => {
-            if (!selectedBlock) {
-                const firstBlock = document.querySelector('.block');
-                if (firstBlock) {
-                    firstBlock.focus();
-                    selectedBlock = firstBlock;
-                    selectedBlock.classList.add('active');
-                }
-            }
-        });
-
-        // Open glass window with code and explanation
-        function openCodeWindow(moduleId) {
-            console.log('Opening code window for:', moduleId);
-            const snippet = codeSnippets[moduleId];
-            if (!snippet) {
-                console.error('No snippet found for moduleId:', moduleId);
-                return;
-            }
-            const content = document.getElementById('codeContent');
-            content.innerHTML = `
-                <textarea>${snippet.code}</textarea>
-                <div class="math-explanation">${snippet.explanation}</div>
-            `;
-            const codeWindow = document.getElementById('codeWindow');
-            codeWindow.classList.remove('hidden');
-            console.log('Code window opened, hidden class removed');
-        }
-
-        // Close glass window
-        function closeCodeWindow() {
-            const codeWindow = document.getElementById('codeWindow');
-            codeWindow.classList.add('hidden');
-            console.log('Code window closed');
-        }
     </script>
 </body>
 </html>
