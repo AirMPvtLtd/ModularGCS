@@ -169,9 +169,11 @@
         .close-modal:hover {
             color: var(--secondary);
         }
-        #buildButton, #controlsButton, #challengesButton, #connectButton, #tutorialButton {
+        #buildButton, #controlsButton, #challengesButton, #connectButton, #tutorialButton,
+        #class6Button, #class7Button, #class8Button, #class9Button, #class10Button, #class11Button, #class12Button {
             position: fixed;
             right: 20px;
+            width: 120px;
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
@@ -184,26 +186,56 @@
             transition: background 0.2s, box-shadow 0.2s;
         }
         #buildButton {
-            top: 50%;
+            top: calc(50% - 300px);
             transform: translateY(-50%);
         }
         #controlsButton {
-            top: calc(50% + 60px);
+            top: calc(50% - 240px);
             transform: translateY(-50%);
         }
         #challengesButton {
-            top: calc(50% + 120px);
+            top: calc(50% - 180px);
             transform: translateY(-50%);
         }
         #connectButton {
-            top: calc(50% + 180px);
+            top: calc(50% - 120px);
             transform: translateY(-50%);
         }
         #tutorialButton {
+            top: calc(50% - 60px);
+            transform: translateY(-50%);
+        }
+        #class6Button {
+            top: calc(50%);
+            transform: translateY(-50%);
+        }
+        #class7Button {
+            top: calc(50% + 60px);
+            transform: translateY(-50%);
+        }
+        #class8Button {
+            top: calc(50% + 120px);
+            transform: translateY(-50%);
+        }
+        #class9Button {
+            top: calc(50% + 180px);
+            transform: translateY(-50%);
+        }
+        #class10Button {
             top: calc(50% + 240px);
             transform: translateY(-50%);
         }
-        #buildButton:hover, #controlsButton:hover, #challengesButton:hover, #connectButton:hover, #tutorialButton:hover {
+        #class11Button {
+            top: calc(50% + 300px);
+            transform: translateY(-50%);
+        }
+        #class12Button {
+            top: calc(50% + 360px);
+            transform: translateY(-50%);
+        }
+        #buildButton:hover, #controlsButton:hover, #challengesButton:hover, #connectButton:hover, #tutorialButton:hover,
+        #class6Button:hover, #class7Button:hover, #class8Button:hover, #class9Button:hover, #class10Button:hover,
+        #class11Button:hover, #class12Button:hover {
             background: rgba(0, 240, 255, 0.2);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
         }
@@ -332,6 +364,13 @@
     <button id="challengesButton">Challenges</button>
     <button id="connectButton">Connect</button>
     <button id="tutorialButton">Tutorial</button>
+    <button id="class6Button">Class 6</button>
+    <button id="class7Button">Class 7</button>
+    <button id="class8Button">Class 8</button>
+    <button id="class9Button">Class 9</button>
+    <button id="class10Button">Class 10</button>
+    <button id="class11Button">Class 11</button>
+    <button id="class12Button">Class 12</button>
     <div id="buildStatus">
         <span id="statusMessage"></span>
         <button id="deepDiveButton">Deep Dive</button>
@@ -418,7 +457,7 @@
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Canvas:</strong> The main area displays blocks representing drone functions (e.g., Initialize System, Drive Motors).</li>
                     <li><strong>Header:</strong> Shows the platform title and connection status (green for connected, red for disconnected).</li>
-                    <li><strong>Right-Side Buttons:</strong> Control the workflow: Build, Controls, Challenges, Connect, Tutorial.</li>
+                    <li><strong>Right-Side Buttons:</strong> Control the workflow: Build, Controls, Challenges, Connect, Tutorial, and Class selection.</li>
                 </ul>
 
                 <h4>2. Interacting with Blocks</h4>
@@ -472,10 +511,17 @@
                     <li><strong>Navigation:</strong> Scroll to read all sections. Click the "×" to close.</li>
                 </ul>
 
+                <h4>9. Selecting Class Curriculum</h4>
+                <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
+                    <li><strong>Class Buttons:</strong> Click "Class 6" to "Class 12" to select the curriculum for that grade.</li>
+                    <li><strong>Functionality:</strong> Loads grade-specific challenges and activities aligned with the CBSE syllabus.</li>
+                </ul>
+
                 <h4>Tips</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li>Start with the "Build" button to compile code, then connect to the drone.</li>
                     <li>Use "Controls" for simple flight or "Challenges" for coding practice.</li>
+                    <li>Select the appropriate class to access relevant activities.</li>
                     <li>Check the status bar for feedback on actions.</li>
                     <li>Revisit this tutorial anytime by clicking "Tutorial".</li>
                 </ul>
@@ -1201,6 +1247,16 @@ void DroneSystem::main_task(void* arg) {
             document.getElementById('uploadCodeButton').addEventListener('click', handleUpload);
         }
 
+        function setupClassListeners() {
+            document.getElementById('class6Button').addEventListener('click', () => showBuildStatus('Selected Class 6 Curriculum'));
+            document.getElementById('class7Button').addEventListener('click', () => showBuildStatus('Selected Class 7 Curriculum'));
+            document.getElementById('class8Button').addEventListener('click', () => showBuildStatus('Selected Class 8 Curriculum'));
+            document.getElementById('class9Button').addEventListener('click', () => showBuildStatus('Selected Class 9 Curriculum'));
+            document.getElementById('class10Button').addEventListener('click', () => showBuildStatus('Selected Class 10 Curriculum'));
+            document.getElementById('class11Button').addEventListener('click', () => showBuildStatus('Selected Class 11 Curriculum'));
+            document.getElementById('class12Button').addEventListener('click', () => showBuildStatus('Selected Class 12 Curriculum'));
+        }
+
         function setupBlockListeners() {
             document.querySelectorAll('.block').forEach(block => {
                 block.addEventListener('click', (event) => {
@@ -1258,59 +1314,42 @@ void DroneSystem::main_task(void* arg) {
                     clearTimeout(tapTimeout);
                     toggleBlockSelection(block);
                 } else {
+                    lastTapTime = currentTime;
+                    lastTappedBlock = block;
                     tapTimeout = setTimeout(() => {
-                        if (!isDragging) showModal(block);
+                        showModal(block);
                     }, 300);
                 }
-                lastTapTime = currentTime;
-                lastTappedBlock = block;
             } else {
-                showModal(block);
+                if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
+                    toggleBlockSelection(block);
+                } else {
+                    lastTapTime = currentTime;
+                    lastTappedBlock = block;
+                    showModal(block);
+                }
             }
         }
 
         function toggleBlockSelection(block) {
             const index = selectedBlocks.indexOf(block);
-            if (index !== -1) {
-                selectedBlocks.splice(index, 1);
-                block.classList.remove('selected');
-            } else {
+            if (index === -1) {
                 selectedBlocks.push(block);
                 block.classList.add('selected');
+            } else {
+                selectedBlocks.splice(index, 1);
+                block.classList.remove('selected');
             }
             updateArrows();
         }
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                setupInteract();
-                setupBlockListeners();
-                setupControlListeners();
-                setupChallengeListeners();
-                setupConnectListeners();
-
-                const styleSheet = document.createElement('style');
-                styleSheet.textContent = `
-                    @keyframes blink {
-                        0% { opacity: 1; }
-                        50% { opacity: 0; }
-                        100% { opacity: 1; }
-                    }
-                    progress::-webkit-progress-bar {
-                        background: rgba(0, 0, 0, 0.5);
-                        border-radius: 4px;
-                    }
-                    progress::-webkit-progress-value {
-                        background: var(--primary);
-                        border-radius: 4px;
-                    }
-                    progress::-moz-progress-bar {
-                        background: var(--primary);
-                        border-radius: 4px;
-                    }
-                `;
-                document.head.appendChild(styleSheet);
-            }, 1000);
+        document.addEventListener('DOMContentLoaded', () => {
+            setupInteract();
+            setupBlockListeners();
+            setupControlListeners();
+            setupChallengeListeners();
+            setupConnectListeners();
+            setupClassListeners();
         });
     </script>
 </body>
