@@ -25,6 +25,23 @@
         .bg-red-500 { background-color: #ef4444; }
         .fixed { position: fixed; }
         .z-50 { z-index: 50; }
+        .grid-cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .chapter-btn, .class-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.875rem;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+        .chapter-btn:hover, .class-btn:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
+        }
 
         :root {
             --primary: #00f0ff;
@@ -169,35 +186,48 @@
         .close-modal:hover {
             color: var(--secondary);
         }
-        .button-panel {
+        #buildButton, #controlsButton, #challengesButton, #connectButton, #tutorialButton, .class-btn {
             position: fixed;
             right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 200;
-        }
-        .button-column {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .control-button, .class-button {
-            width: 150px;
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
             font-family: 'Share Tech Mono', monospace;
             font-size: 1rem;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
+            z-index: 200;
             transition: background 0.2s, box-shadow 0.2s;
-            text-align: center;
         }
-        .control-button:hover, .class-button:hover {
+        #buildButton {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #controlsButton {
+            top: calc(50% + 60px);
+            transform: translateY(-50%);
+        }
+        #challengesButton {
+            top: calc(50% + 120px);
+            transform: translateY(-50%);
+        }
+        #connectButton {
+            top: calc(50% + 180px);
+            transform: translateY(-50%);
+        }
+        #tutorialButton {
+            top: calc(50% + 240px);
+            transform: translateY(-50%);
+        }
+        #class6Button { top: calc(50% + 300px); transform: translateY(-50%); }
+        #class7Button { top: calc(50% + 360px); transform: translateY(-50%); }
+        #class8Button { top: calc(50% + 420px); transform: translateY(-50%); }
+        #class9Button { top: calc(50% + 480px); transform: translateY(-50%); }
+        #class10Button { top: calc(50% + 540px); transform: translateY(-50%); }
+        #class11Button { top: calc(50% + 600px); transform: translateY(-50%); }
+        #class12Button { top: calc(50% + 660px); transform: translateY(-50%); }
+        #buildButton:hover, #controlsButton:hover, #challengesButton:hover, #connectButton:hover, #tutorialButton:hover, .class-btn:hover {
             background: rgba(0, 240, 255, 0.2);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
         }
@@ -321,24 +351,18 @@
         </div>
     </div>
     <div style="position: fixed; top: 50%; left: 0; width: 100vw; text-align: center; transform: translateY(-50%); font-family: 'Share Tech Mono', monospace; font-size: 10rem; color: var(--primary); opacity: 0.1; pointer-events: none; z-index: 150;">AIRM</div>
-    <div class="button-panel">
-        <div class="button-column">
-            <button id="buildButton" class="control-button">Build</button>
-            <button id="controlsButton" class="control-button">Controls</button>
-            <button id="connectButton" class="control-button">Connect</button>
-            <button id="tutorialButton" class="control-button">Tutorial</button>
-        </div>
-        <div class="button-column">
-            <button id="class6Button" class="class-button">Class 6</button>
-            <button id="class7Button" class="class-button">Class 7</button>
-            <button id="class8Button" class="class-button">Class 8</button>
-            <button id="class9Button" class="class-button">Class 9</button>
-            <button id="class10Button" class="class-button">Class 10</button>
-            <button id="class11Button" class="class-button">Class 11</button>
-            <button id="class12Button" class="class-button">Class 12</button>
-            <button id="challengesButton" class="class-button">Challenges</button>
-        </div>
-    </div>
+    <button id="buildButton">Build</button>
+    <button id="controlsButton">Controls</button>
+    <button id="challengesButton">Challenges</button>
+    <button id="connectButton">Connect</button>
+    <button id="tutorialButton">Tutorial</button>
+    <button id="class6Button" class="class-btn">Class 6</button>
+    <button id="class7Button" class="class-btn">Class 7</button>
+    <button id="class8Button" class="class-btn">Class 8</button>
+    <button id="class9Button" class="class-btn">Class 9</button>
+    <button id="class10Button" class="class-btn">Class 10</button>
+    <button id="class11Button" class="class-btn">Class 11</button>
+    <button id="class12Button" class="class-btn">Class 12</button>
     <div id="buildStatus">
         <span id="statusMessage"></span>
         <button id="deepDiveButton">Deep Dive</button>
@@ -420,27 +444,23 @@
             <div class="modal-section" style="padding: 10px;">
                 <h4>Welcome</h4>
                 <p class="text-sm">This platform is designed to teach math and coding through drone programming for grades 6-12. Follow this guide to learn how to use each feature.</p>
-
                 <h4>1. Understanding the Interface</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Canvas:</strong> The main area displays blocks representing drone functions (e.g., Initialize System, Drive Motors).</li>
                     <li><strong>Header:</strong> Shows the platform title and connection status (green for connected, red for disconnected).</li>
-                    <li><strong>Right-Side Buttons:</strong> Control the workflow (Build, Controls, Connect, Tutorial) and select grade levels (Class 6-12) with Challenges below.</li>
+                    <li><strong>Right-Side Buttons:</strong> Control the workflow: Build, Controls, Challenges, Connect, Tutorial, and Class 6-12.</li>
                 </ul>
-
                 <h4>2. Interacting with Blocks</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Drag Blocks:</strong> Click and drag blocks to reposition them on the canvas, snapping to a 10x10 grid.</li>
                     <li><strong>View Details:</strong> Click a block to open a modal showing its code and related math equations.</li>
                     <li><strong>Select Blocks:</strong> Double-tap (touch) or double-click to select blocks, connecting them with yellow arrows to visualize workflow.</li>
                 </ul>
-
                 <h4>3. Building Code</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Build Button:</strong> Click "Build" to compile code from all blocks into a single program.</li>
                     <li><strong>Status:</strong> A status bar at the top shows "Successfully Built" or "Build Failed". If it fails, click "Deep Dive" to view error logs in a new window.</li>
                 </ul>
-
                 <h4>4. Controlling the Drone</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Controls Button:</strong> Opens a modal for basic flight controls (Grades 6-8).</li>
@@ -448,7 +468,6 @@
                     <li><strong>Speed:</strong> Adjust the throttle slider (0-100%) to set motor speed.</li>
                     <li><strong>Note:</strong> Requires a connected drone to send commands.</li>
                 </ul>
-
                 <h4>5. Completing Coding Challenges</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Challenges Button:</strong> Opens a modal with coding challenges (Grades 8-12).</li>
@@ -456,7 +475,6 @@
                     <li><strong>Advanced Challenge:</strong> Stabilize the drone by setting roll and pitch (-45 to 45) using <code>adjust_angle(roll, pitch)</code>.</li>
                     <li><strong>Output:</strong> Results are shown in the status bar, e.g., motor speeds or stability score.</li>
                 </ul>
-
                 <h4>6. Connecting to the Drone</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Connect Button:</strong> Opens a modal to connect to the drone.</li>
@@ -464,7 +482,6 @@
                     <li><strong>Connect:</strong> Click "Connect" to establish a WiFi connection. The status blinks "Connected" or "Disconnected" for 5 seconds.</li>
                     <li><strong>Header Indicator:</strong> Green dot indicates connected, red indicates disconnected.</li>
                 </ul>
-
                 <h4>7. Uploading Code</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Upload Button:</strong> In the Connect modal, click "Upload" to send compiled code to the drone.</li>
@@ -472,27 +489,42 @@
                     <li><strong>Progress:</strong> A progress bar shows upload progress (0-100% over 5 seconds).</li>
                     <li><strong>Status:</strong> Blinks "Upload Complete" or "Upload Failed" for 5 seconds.</li>
                 </ul>
-
-                <h4>8. Using the Tutorial</h4>
+                <h4>8. Using Class Modals</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
-                    <li><strong>Tutorial Button:</strong> You’re here! This modal provides a guide to all features.</li>
-                    <li><strong>Navigation:</strong> Scroll to read all sections. Click the "×" to close.</li>
+                    <li><strong>Class Buttons:</strong> Click "Class 6" to "Class 12" to open a modal with CBSE math chapters.</li>
+                    <li><strong>Chapters:</strong> Select a chapter to view last flight data and solve real-time problems to plan the next flight.</li>
                 </ul>
-
-                <h4>9. Grade-Specific Content</h4>
-                <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
-                    <li><strong>Class Buttons:</strong> Click "Class 6" to "Class 12" to load grade-specific challenges and tutorials.</li>
-                    <li><strong>Content:</strong> Each class button provides age-appropriate math and coding activities.</li>
-                </ul>
-
                 <h4>Tips</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li>Start with the "Build" button to compile code, then connect to the drone.</li>
                     <li>Use "Controls" for simple flight or "Challenges" for coding practice.</li>
-                    <li>Select your class level to access tailored content.</li>
+                    <li>Explore "Class" buttons to apply math concepts to drone flights.</li>
                     <li>Check the status bar for feedback on actions.</li>
                     <li>Revisit this tutorial anytime by clicking "Tutorial".</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="classModal">
+        <div class="modal-content">
+            <button class="close-modal">×</button>
+            <h3 id="classModalTitle"></h3>
+            <div id="chapterGrid" class="grid-cols-3"></div>
+        </div>
+    </div>
+    <div class="modal" id="chapterModal">
+        <div class="modal-content">
+            <button class="close-modal">×</button>
+            <h3 id="chapterModalTitle"></h3>
+            <div class="modal-section">
+                <h4>Last Flight Data</h4>
+                <p id="flightData" class="text-xs"></p>
+            </div>
+            <div class="modal-section">
+                <h4>Real-Time Problem</h4>
+                <p id="problemText" class="text-xs"></p>
+                <textarea id="problemSolution" style="height: 100px; margin-top: 10px;" placeholder="Enter your solution (e.g., motor speed, angles)"></textarea>
+                <button id="submitSolution" style="margin-top: 10px;">Submit Solution</button>
             </div>
         </div>
     </div>
@@ -830,8 +862,7 @@ void DroneSystem::main_task(void* arg) {
         vTaskDelay((int)(DT * 1000) / portTICK_PERIOD_MS);
     }
 }`,
-                equations: `\\[ T_{\\text{loop}} = \\Delta t = 0.01 \\text{s} \\]
-\\[ m_i = T + u_{\\text{pitch}} + u_{\\text{roll}} + u_{\\text{yaw}} \\]`
+                equations: `\\[ T_{\\text{loop}} = \\Delta t = 0.01 \\text{s Bod}\\]`
             },
             challenges: {
                 set_speed: {
@@ -854,6 +885,167 @@ void DroneSystem::main_task(void* arg) {
 \\[ \\theta_{\\text{pitch}} = \\max(\\min(\\text{pitch}, 45), -45) \\]`
                 }
             }
+        };
+
+        const cbseMathChapters = {
+            class6: [
+                "Knowing Our Numbers",
+                "Whole Numbers",
+                "Playing with Numbers",
+                "Basic Geometrical Ideas",
+                "Understanding Elementary Shapes",
+                "Integers",
+                "Fractions",
+                "Decimals",
+                "Data Handling",
+                "Mensuration",
+                "Algebra",
+                "Ratio and Proportion",
+                "Symmetry",
+                "Practical Geometry"
+            ],
+            class7: [
+                "Integers",
+                "Fractions and Decimals",
+                "Data Handling",
+                "Simple Equations",
+                "Lines and Angles",
+                "The Triangle and its Properties",
+                "Congruence of Triangles",
+                "Comparing Quantities",
+                "Rational Numbers",
+                "Practical Geometry",
+                "Perimeter and Area",
+                "Algebraic Expressions",
+                "Exponents and Powers",
+                "Symmetry",
+                "Visualising Solid Shapes"
+            ],
+            class8: [
+                "Rational Numbers",
+                "Linear Equations in One Variable",
+                "Understanding Quadrilaterals",
+                "Practical Geometry",
+                "Data Handling",
+                "Squares and Square Roots",
+                "Cubes and Cube Roots",
+                "Comparing Quantities",
+                "Algebraic Expressions and Identities",
+                "Visualising Solid Shapes",
+                "Mensuration",
+                "Exponents and Powers",
+                "Direct and Inverse Proportions",
+                "Factorisation",
+                "Introduction to Graphs",
+                "Playing with Numbers"
+            ],
+            class9: [
+                "Number Systems",
+                "Polynomials",
+                "Coordinate Geometry",
+                "Linear Equations in Two Variables",
+                "Introduction to Euclid’s Geometry",
+                "Lines and Angles",
+                "Triangles",
+                "Quadrilaterals",
+                "Areas of Parallelograms and Triangles",
+                "Circles",
+                "Constructions",
+                "Heron’s Formula",
+                "Surface Areas and Volumes",
+                "Statistics",
+                "Probability"
+            ],
+            class10: [
+                "Real Numbers",
+                "Polynomials",
+                "Pair of Linear Equations in Two Variables",
+                "Quadratic Equations",
+                "Arithmetic Progressions",
+                "Triangles",
+                "Coordinate Geometry",
+                "Introduction to Trigonometry",
+                "Some Applications of Trigonometry",
+                "Circles",
+                "Constructions",
+                "Areas Related to Circles",
+                "Surface Areas and Volumes",
+                "Statistics",
+                "Probability"
+            ],
+            class11: [
+                "Sets",
+                "Relations and Functions",
+                "Trigonometric Functions",
+                "Principle of Mathematical Induction",
+                "Complex Numbers and Quadratic Equations",
+                "Linear Inequalities",
+                "Permutations and Combinations",
+                "Binomial Theorem",
+                "Sequences and Series",
+                "Straight Lines",
+                "Conic Sections",
+                "Introduction to Three Dimensional Geometry",
+                "Limits and Derivatives",
+                "Mathematical Reasoning",
+                "Statistics",
+                "Probability"
+            ],
+            class12: [
+                "Relations and Functions",
+                "Inverse Trigonometric Functions",
+                "Matrices",
+                "Determinants",
+                "Continuity and Differentiability",
+                "Application of Derivatives",
+                "Integrals",
+                "Application of Integrals",
+                "Differential Equations",
+                "Vector Algebra",
+                "Three Dimensional Geometry",
+                "Linear Programming",
+                "Probability"
+            ]
+        };
+
+        const chapterProblems = {
+            "Knowing Our Numbers": {
+                problem: "Calculate the drone's altitude to hover at 5 meters using place value. If each meter requires a motor speed increase of 10%, what is the required speed?",
+                solution: "50%"
+            },
+            "Integers": {
+                problem: "The drone needs to adjust its roll by -10 degrees to correct its position. If the current roll is 5 degrees, calculate the new roll angle.",
+                solution: "-5 degrees"
+            },
+            "Rational Numbers": {
+                problem: "The drone's battery level is at 3/4 of its capacity. If it consumes 1/8 of the battery per minute, how many minutes can it fly?",
+                solution: "6 minutes"
+            },
+            "Number Systems": {
+                problem: "Convert the drone's speed of 50% to a binary number for motor control (0-65535). What is the binary equivalent of the motor speed?",
+                solution: "1000000000000000"
+            },
+            "Real Numbers": {
+                problem: "The drone's distance from the target is √50 meters. Approximate this to two decimal places for flight planning.",
+                solution: "7.07 meters"
+            },
+            "Sets": {
+                problem: "The drone can perform {hover, forward, rotate}. If it must choose 2 actions for a maneuver, how many combinations are possible?",
+                solution: "3 combinations"
+            },
+            "Relations and Functions": {
+                problem: "The drone's height h is a function of time t, h(t) = 2t. Calculate the height after 3 seconds.",
+                solution: "6 meters"
+            }
+        };
+
+        let lastFlightData = {
+            roll: 5.2,
+            pitch: -3.1,
+            yaw: 10.0,
+            height: 1.5,
+            battery: 75,
+            motorSpeeds: [32000, 32500, 31800, 32200]
         };
 
         function setupInteract() {
@@ -971,6 +1163,43 @@ void DroneSystem::main_task(void* arg) {
             modal.style.display = 'flex';
         }
 
+        function showClassModal(classGrade) {
+            const modal = document.getElementById('classModal');
+            const modalTitle = document.getElementById('classModalTitle');
+            const chapterGrid = document.getElementById('chapterGrid');
+            modalTitle.textContent = `Class ${classGrade} CBSE Math Chapters`;
+            chapterGrid.innerHTML = '';
+
+            const chapters = cbseMathChapters[`class${classGrade}`];
+            chapters.forEach(chapter => {
+                const button = document.createElement('button');
+                button.className = 'chapter-btn';
+                button.textContent = chapter;
+                button.addEventListener('click', () => showChapterModal(classGrade, chapter));
+                chapterGrid.appendChild(button);
+            });
+
+            modal.style.display = 'flex';
+        }
+
+        function showChapterModal(classGrade, chapter) {
+            const modal = document.getElementById('chapterModal');
+            const modalTitle = document.getElementById('chapterModalTitle');
+            const flightData = document.getElementById('flightData');
+            const problemText = document.getElementById('problemText');
+            modalTitle.textContent = `${chapter} (Class ${classGrade})`;
+
+            flightData.textContent = `Roll: ${lastFlightData.roll}°, Pitch: ${lastFlightData.pitch}°, Yaw: ${lastFlightData.yaw}°, Height: ${lastFlightData.height}m, Battery: ${lastFlightData.battery}%, Motor Speeds: [${lastFlightData.motorSpeeds.join(', ')}]`;
+
+            const problem = chapterProblems[chapter] || {
+                problem: `Apply concepts from ${chapter} to plan the next flight. Suggest motor speeds or angles.`,
+                solution: "User-defined"
+            };
+            problemText.textContent = problem.problem;
+
+            modal.style.display = 'flex';
+        }
+
         function showBuildStatus(message, isError = false) {
             const buildStatus = document.getElementById('buildStatus');
             const statusMessage = document.getElementById('statusMessage');
@@ -1063,6 +1292,35 @@ void DroneSystem::main_task(void* arg) {
             }
             console.log(`Sending command: ${command}`);
             showBuildStatus(`Command: ${command}`);
+            updateFlightData(command);
+        }
+
+        function updateFlightData(command) {
+            const parts = command.split(':');
+            if (parts[0] === 'set_speed') {
+                const speed = parseFloat(parts[1]);
+                lastFlightData.motorSpeeds = [speed * 65535 / 100, speed * 65535 / 100, speed * 65535 / 100, speed * 65535 / 100];
+                lastFlightData.height = speed / 100 * 2;
+            } else if (parts[0] === 'adjust_angle') {
+                const [roll, pitch] = parts[1].split(',').map(parseFloat);
+                lastFlightData.roll = roll;
+                lastFlightData.pitch = pitch;
+            } else if (parts[0] === 'set_throttle') {
+                const throttle = parseFloat(parts[1]) * 100;
+                lastFlightData.motorSpeeds = lastFlightData.motorSpeeds.map(() => throttle * 65535 / 100);
+                lastFlightData.height = throttle / 100 * 2;
+            } else if (command === 'hover') {
+                lastFlightData.height = 1.0;
+                lastFlightData.roll = 0;
+                lastFlightData.pitch = 0;
+            } else if (command === 'forward') {
+                lastFlightData.pitch = 10;
+            } else if (command === 'rotate_left') {
+                lastFlightData.yaw -= 10;
+            } else if (command === 'rotate_right') {
+                lastFlightData.yaw += 10;
+            }
+            lastFlightData.battery = Math.max(lastFlightData.battery - 1, 0);
         }
 
         function runBeginnerChallenge() {
@@ -1082,260 +1340,217 @@ void DroneSystem::main_task(void* arg) {
         }
 
         function runAdvancedChallenge() {
-            const rollInput = document.getElementById('advancedRoll').value;
-            const pitchInput = document.getElementById('advancedPitch').value;
-            const code = document.getElementById('advancedCode').value;
-            const roll = parseFloat(rollInput);
-            const pitch = parseFloat(pitchInput);
+            runAdvancedChallenge() {
+    const rollInput = document.getElementById('advancedRoll').value;
+    const pitchInput = document.getElementById('advancedPitch').value;
+    const code = document.getElementById('advancedCode').value;
+    const roll = parseFloat(rollInput);
+    const pitch = parseFloat(pitchInput);
 
-            if (isNaN(roll) || roll < -45 || roll > 45 || isNaN(pitch) || pitch < -45 || pitch > 45) {
-                showBuildStatus('Invalid roll/pitch values (-45 to 45 required)', true);
-                return;
-            }
+    if (isNaN(roll) || isNaN(pitch) || roll < -45 || roll > 45 || pitch < -45 || pitch > 45) {
+        showBuildStatus('Invalid roll or pitch value (-45 to 45 required)', true);
+        return;
+    }
 
-            const stabilityScore = Math.abs(roll) + Math.abs(pitch);
-            const simulatedResponse = `Drone stabilized: Roll=${roll}, Pitch=${pitch}\n` +
-                                     `Stability Score: ${stabilityScore.toFixed(2)} (lower is better)`;
-            showBuildStatus('Advanced Challenge: ' + simulatedResponse);
-            sendCommand(`adjust_angle:${roll},${pitch}`);
+    // Simulate drone stabilization: calculate stability score based on how close roll and pitch are to 0
+    const stabilityScore = 100 - (Math.abs(roll) + Math.abs(pitch)) * 2;
+    const simulatedResponse = `Drone stabilized: Roll=${roll}°, Pitch=${pitch}°, Stability Score=${stabilityScore.toFixed(2)}%`;
+    showBuildStatus('Advanced Challenge: ' + simulatedResponse);
+    sendCommand(`adjust_angle:${roll},${pitch}`);
+}
+
+function submitSolution() {
+    const solutionInput = document.getElementById('problemSolution').value.trim();
+    const chapter = document.getElementById('chapterModalTitle').textContent.split(' (')[0];
+    const expectedSolution = chapterProblems[chapter]?.solution || 'User-defined';
+
+    if (!solutionInput) {
+        showBuildStatus('Please enter a solution', true);
+        return;
+    }
+
+    // Simulate solution validation
+    const isCorrect = expectedSolution === 'User-defined' || solutionInput.toLowerCase() === expectedSolution.toLowerCase();
+    if (isCorrect) {
+        showBuildStatus(`Solution for ${chapter} accepted`);
+        // Update flight data based on solution if applicable
+        if (chapterProblems[chapter]?.solution.includes('%')) {
+            const speed = parseFloat(solutionInput) || 50;
+            sendCommand(`set_speed:${speed}`);
+        } else if (chapterProblems[chapter]?.solution.includes('degrees')) {
+            const angle = parseFloat(solutionInput) || 0;
+            sendCommand(`adjust_angle:${angle},0`);
         }
+    } else {
+        showBuildStatus(`Incorrect solution for ${chapter}. Expected: ${expectedSolution}`, true);
+    }
+}
 
-        function handleConnect() {
-            const droneId = document.getElementById('droneId').value.trim();
-            const password = document.getElementById('dronePassword').value;
-            const droneStatus = document.getElementById('droneStatus');
-            const connectionIndicator = document.getElementById('connectionIndicator');
-            const connectionStatus = document.getElementById('connectionStatus');
-
-            if (droneId === '' || password.length < 8) {
-                showBuildStatus('Invalid Drone ID or Password (minimum 8 characters)', true);
-                droneStatus.textContent = 'Status: Invalid Credentials';
-                droneStatus.style.animation = 'blink 1s infinite';
-                setTimeout(() => {
-                    droneStatus.style.animation = 'none';
-                }, 5000);
-                return;
-            }
-
-            const isSuccess = Math.random() < 0.7;
-            if (isSuccess) {
-                isConnected = true;
-                droneStatus.textContent = 'Status: Connected';
-                droneStatus.style.animation = 'blink 1s infinite';
-                connectionIndicator.classList.remove('bg-red-500');
-                connectionIndicator.classList.add('bg-green-500');
-                connectionStatus.textContent = 'Connected';
-                showBuildStatus(`Connected to Drone ${droneId}`);
-            } else {
-                isConnected = false;
-                droneStatus.textContent = 'Status: Disconnected';
-                droneStatus.style.animation = 'blink 1s infinite';
-                connectionIndicator.classList.remove('bg-green-500');
-                connectionIndicator.classList.add('bg-red-500');
-                connectionStatus.textContent = 'Disconnected';
-                showBuildStatus('Connection Failed', true);
-            }
-
-            setTimeout(() => {
-                droneStatus.style.animation = 'none';
-            }, 5000);
-        }
-
-        function handleUpload() {
-            const uploadProgress = document.getElementById('uploadProgress');
-            const uploadStatus = document.getElementById('uploadStatus');
-            const droneId = document.getElementById('droneId').value.trim();
-
-            if (!isConnected) {
-                showBuildStatus('Drone not connected', true);
-                uploadStatus.textContent = 'Upload Status: Not Connected';
-                uploadStatus.style.animation = 'blink 1s infinite';
-                setTimeout(() => {
-                    uploadStatus.style.animation = 'none';
-                }, 5000);
-                return;
-            }
-
-            if (!isBuilt) {
-                showBuildStatus('No successful build available', true);
-                uploadStatus.textContent = 'Upload Status: No Build';
-                uploadStatus.style.animation = 'blink 1s infinite';
-                setTimeout(() => {
-                    uploadStatus.style.animation = 'none';
-                }, 5000);
-                return;
-            }
-
-            uploadProgress.value = 0;
-            uploadStatus.textContent = 'Upload Status: Uploading';
-            uploadStatus.style.animation = 'blink 1s infinite';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                uploadProgress.value = progress;
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    const isSuccess = Math.random() < 0.7;
-                    if (isSuccess) {
-                        uploadStatus.textContent = 'Upload Status: Upload Complete';
-                        showBuildStatus(`Code uploaded to Drone ${droneId}`);
-                    } else {
-                        uploadStatus.textContent = 'Upload Status: Upload Failed';
-                        showBuildStatus('Upload Failed', true);
-                    }
-                    uploadStatus.style.animation = 'blink 1s infinite';
-                    setTimeout(() => {
-                        uploadStatus.style.animation = 'none';
-                    }, 5000);
-                }
-            }, 100);
-        }
-
-        function setupControlListeners() {
-            document.getElementById('hoverBtn').addEventListener('click', () => sendCommand('hover'));
-            document.getElementById('forwardBtn').addEventListener('click', () => sendCommand('forward'));
-            document.getElementById('rotateLeftBtn').addEventListener('click', () => sendCommand('rotate_left'));
-            document.getElementById('rotateRightBtn').addEventListener('click', () => sendCommand('rotate_right'));
-            const throttleSlider = document.getElementById('throttleSlider');
-            const throttleValue = document.getElementById('throttleValue');
-            throttleSlider.addEventListener('input', () => {
-                throttleValue.textContent = throttleSlider.value;
-                sendCommand(`set_throttle:${throttleSlider.value / 100}`);
-            });
-        }
-
-        function setupChallengeListeners() {
-            document.getElementById('runBeginnerChallenge').addEventListener('click', runBeginnerChallenge);
-            document.getElementById('runAdvancedChallenge').addEventListener('click', runAdvancedChallenge);
-        }
-
-        function setupConnectListeners() {
-            document.getElementById('connectDroneButton').addEventListener('click', handleConnect);
-            document.getElementById('uploadCodeButton').addEventListener('click', handleUpload);
-        }
-
-        function setupClassListeners() {
-            for (let i = 6; i <= 12; i++) {
-                document.getElementById(`class${i}Button`).addEventListener('click', () => {
-                    showBuildStatus(`Loaded content for Class ${i}`);
-                    // Placeholder for class-specific functionality
-                });
-            }
-            document.getElementById('challengesButton').addEventListener('click', showChallengesModal);
-        }
-
-        function setupBlockListeners() {
-            document.querySelectorAll('.block').forEach(block => {
-                block.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    handleInteraction(block, false);
-                });
-
-                block.addEventListener('touchstart', (event) => {
-                    event.preventDefault();
-                    handleInteraction(block, true);
-                });
-            });
-
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const modal = event.target.closest('.modal').id;
-                    closeModal(modal);
-                });
-            });
-
-            document.getElementById('blockModal').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) closeModal('blockModal');
-            });
-
-            document.getElementById('controlsModal').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) closeModal('controlsModal');
-            });
-
-            document.getElementById('challengesModal').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) closeModal('challengesModal');
-            });
-
-            document.getElementById('connectModal').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) closeModal('connectModal');
-            });
-
-            document.getElementById('tutorialModal').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) closeModal('tutorialModal');
-            });
-
-            document.getElementById('buildButton').addEventListener('click', handleBuild);
-            document.getElementById('controlsButton').addEventListener('click', showControlsModal);
-            document.getElementById('connectButton').addEventListener('click', showConnectModal);
-            document.getElementById('tutorialButton').addEventListener('click', showTutorialModal);
-            document.getElementById('deepDiveButton').addEventListener('click', showDeepDive);
-        }
-
-        function handleInteraction(block, isTouch) {
-            if (isDragging) return;
-
-            const currentTime = new Date().getTime();
-            if (isTouch) {
+function setupEventListeners() {
+    // Block click and double-click/tap for modal and selection
+    document.querySelectorAll('.block').forEach(block => {
+        block.addEventListener('click', () => {
+            if (!isDragging) {
+                const currentTime = new Date().getTime();
                 if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
+                    // Double-tap/click: select block
+                    if (!block.classList.contains('selected')) {
+                        block.classList.add('selected');
+                        selectedBlocks.push(block);
+                        updateArrows();
+                    }
+                    lastTappedBlock = null;
                     clearTimeout(tapTimeout);
-                    toggleBlockSelection(block);
                 } else {
+                    // Single click: show modal after delay to check for double-click
+                    lastTappedBlock = block;
+                    lastTapTime = currentTime;
                     tapTimeout = setTimeout(() => {
-                        if (!isDragging) showModal(block);
+                        showModal(block);
+                        lastTappedBlock = null;
                     }, 300);
                 }
-                lastTapTime = currentTime;
-                lastTappedBlock = block;
-            } else {
-                showModal(block);
             }
-        }
-
-        function toggleBlockSelection(block) {
-            const index = selectedBlocks.indexOf(block);
-            if (index !== -1) {
-                selectedBlocks.splice(index, 1);
-                block.classList.remove('selected');
-            } else {
-                selectedBlocks.push(block);
-                block.classList.add('selected');
-            }
-            updateArrows();
-        }
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                setupInteract();
-                setupBlockListeners();
-                setupControlListeners();
-                setupChallengeListeners();
-                setupConnectListeners();
-                setupClassListeners();
-
-                const styleSheet = document.createElement('style');
-                styleSheet.textContent = `
-                    @keyframes blink {
-                        0% { opacity: 1; }
-                        50% { opacity: 0; }
-                        100% { opacity: 1; }
-                    }
-                    progress::-webkit-progress-bar {
-                        background: rgba(0, 0, 0, 0.5);
-                        border-radius: 4px;
-                    }
-                    progress::-webkit-progress-value {
-                        background: var(--primary);
-                        border-radius: 4px;
-                    }
-                    progress::-moz-progress-bar {
-                        background: var(--primary);
-                        border-radius: 4px;
-                    }
-                `;
-                document.head.appendChild(styleSheet);
-            }, 1000);
         });
+    });
+
+    // Close modals
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.modal');
+            closeModal(modal.id);
+        });
+    });
+
+    // Modal button listeners
+    document.getElementById('buildButton').addEventListener('click', handleBuild);
+    document.getElementById('controlsButton').addEventListener('click', showControlsModal);
+    document.getElementById('challengesButton').addEventListener('click', showChallengesModal);
+    document.getElementById('connectButton').addEventListener('click', showConnectModal);
+    document.getElementById('tutorialButton').addEventListener('click', showTutorialModal);
+
+    // Class buttons
+    [6, 7, 8, 9, 10, 11, 12].forEach(grade => {
+        document.getElementById(`class${grade}Button`).addEventListener('click', () => {
+            showClassModal(grade);
+        });
+    });
+
+    // Deep Dive button
+    document.getElementById('deepDiveButton').addEventListener('click', showDeepDive);
+
+    // Challenges
+    document.getElementById('runBeginnerChallenge').addEventListener('click', runBeginnerChallenge);
+    document.getElementById('runAdvancedChallenge').addEventListener('click', runAdvancedChallenge);
+
+    // Control buttons
+    document.getElementById('hoverBtn').addEventListener('click', () => sendCommand('hover'));
+    document.getElementById('forwardBtn').addEventListener('click', () => sendCommand('forward'));
+    document.getElementById('rotateLeftBtn').addEventListener('click', () => sendCommand('rotate_left'));
+    document.getElementById('rotateRightBtn').addEventListener('click', () => sendCommand('rotate_right'));
+
+    // Throttle slider
+    const throttleSlider = document.getElementById('throttleSlider');
+    const throttleValue = document.getElementById('throttleValue');
+    throttleSlider.addEventListener('input', () => {
+        throttleValue.textContent = throttleSlider.value;
+        sendCommand(`set_throttle:${throttleSlider.value / 100}`);
+    });
+
+    // Connect and Upload buttons
+    document.getElementById('connectDroneButton').addEventListener('click', () => {
+        const droneId = document.getElementById('droneId').value.trim();
+        const password = document.getElementById('dronePassword').value.trim();
+        const droneStatus = document.getElementById('droneStatus');
+        const connectionIndicator = document.getElementById('connectionIndicator');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        if (!droneId || password.length < 8) {
+            showBuildStatus('Invalid Drone ID or Password (minimum 8 characters)', true);
+            droneStatus.textContent = 'Status: Invalid credentials';
+            return;
+        }
+
+        // Simulate connection
+        isConnected = Math.random() < 0.8;
+        if (isConnected) {
+            droneStatus.textContent = 'Status: Connected';
+            connectionIndicator.classList.remove('bg-red-500');
+            connectionIndicator.classList.add('bg-green-500');
+            connectionStatus.textContent = 'Connected';
+            showBuildStatus('Drone Connected');
+        } else {
+            droneStatus.textContent = 'Status: Disconnected';
+            connectionIndicator.classList.add('bg-red-500');
+            connectionStatus.textContent = 'Disconnected';
+            showBuildStatus('Connection Failed', true);
+        }
+
+        // Blink status
+        setTimeout(() => {
+            droneStatus.textContent = `Status: ${isConnected ? 'Connected' : 'Disconnected'}`;
+        }, 5000);
+    });
+
+    document.getElementById('uploadCodeButton').addEventListener('click', () => {
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        if (!isConnected) {
+            showBuildStatus('Drone not connected', true);
+            uploadStatus.textContent = 'Upload Status: Failed (Not Connected)';
+            return;
+        }
+
+        if (!isBuilt) {
+            showBuildStatus('No successful build to upload', true);
+            uploadStatus.textContent = 'Upload Status: Failed (No Build)';
+            return;
+        }
+
+        // Simulate upload
+        uploadStatus.textContent = 'Upload Status: Uploading...';
+        uploadProgress.value = 0;
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 20;
+            uploadProgress.value = progress;
+            if (progress >= 100) {
+                clearInterval(interval);
+                const isSuccess = Math.random() < 0.9;
+                if (isSuccess) {
+                    uploadStatus.textContent = 'Upload Status: Complete';
+                    showBuildStatus('Upload Complete');
+                } else {
+                    uploadStatus.textContent = 'Upload Status: Failed';
+                    showBuildStatus('Upload Failed', true);
+                }
+                // Reset after 5 seconds
+                setTimeout(() => {
+                    uploadStatus.textContent = 'Upload Status: None';
+                    uploadProgress.value = 0;
+                }, 5000);
+            }
+        }, 1000);
+    });
+
+    // Chapter modal submit solution
+    document.getElementById('submitSolution').addEventListener('click', submitSolution);
+}
+
+// Initialize the platform
+setupInteract();
+setupEventListeners();
+
+// Close modals when clicking outside
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal(modal.id);
+        }
+    });
+});
     </script>
 </body>
 </html>
+
