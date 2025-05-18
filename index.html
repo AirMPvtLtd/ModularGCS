@@ -25,23 +25,6 @@
         .bg-red-500 { background-color: #ef4444; }
         .fixed { position: fixed; }
         .z-50 { z-index: 50; }
-        .grid-cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .chapter-btn, .class-btn {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.875rem;
-            padding: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-            text-align: center;
-        }
-        .chapter-btn:hover, .class-btn:hover {
-            background: rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
-        }
 
         :root {
             --primary: #00f0ff;
@@ -186,9 +169,12 @@
         .close-modal:hover {
             color: var(--secondary);
         }
-        #buildButton, #controlsButton, #challengesButton, #connectButton, #tutorialButton, .class-btn {
+        
+        /* Unified right-side buttons */
+        .right-side-btn {
             position: fixed;
             right: 20px;
+            width: 150px;
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
@@ -199,38 +185,62 @@
             cursor: pointer;
             z-index: 200;
             transition: background 0.2s, box-shadow 0.2s;
+            text-align: center;
         }
-        #buildButton {
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        #controlsButton {
-            top: calc(50% + 60px);
-            transform: translateY(-50%);
-        }
-        #challengesButton {
-            top: calc(50% + 120px);
-            transform: translateY(-50%);
-        }
-        #connectButton {
-            top: calc(50% + 180px);
-            transform: translateY(-50%);
-        }
-        #tutorialButton {
-            top: calc(50% + 240px);
-            transform: translateY(-50%);
-        }
-        #class6Button { top: calc(50% + 300px); transform: translateY(-50%); }
-        #class7Button { top: calc(50% + 360px); transform: translateY(-50%); }
-        #class8Button { top: calc(50% + 420px); transform: translateY(-50%); }
-        #class9Button { top: calc(50% + 480px); transform: translateY(-50%); }
-        #class10Button { top: calc(50% + 540px); transform: translateY(-50%); }
-        #class11Button { top: calc(50% + 600px); transform: translateY(-50%); }
-        #class12Button { top: calc(50% + 660px); transform: translateY(-50%); }
-        #buildButton:hover, #controlsButton:hover, #challengesButton:hover, #connectButton:hover, #tutorialButton:hover, .class-btn:hover {
+        
+        .right-side-btn:hover {
             background: rgba(0, 240, 255, 0.2);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
         }
+        
+        #buildButton {
+            top: 100px;
+        }
+        
+        #controlsButton {
+            top: 160px;
+        }
+        
+        #challengesButton {
+            top: 220px;
+        }
+        
+        #connectButton {
+            top: 280px;
+        }
+        
+        #tutorialButton {
+            top: 340px;
+        }
+        
+        #class6Btn {
+            top: 400px;
+        }
+        
+        #class7Btn {
+            top: 460px;
+        }
+        
+        #class8Btn {
+            top: 520px;
+        }
+        
+        #class9Btn {
+            top: 580px;
+        }
+        
+        #class10Btn {
+            top: 640px;
+        }
+        
+        #class11Btn {
+            top: 700px;
+        }
+        
+        #class12Btn {
+            top: 760px;
+        }
+
         #buildStatus {
             position: fixed;
             top: 60px;
@@ -271,6 +281,128 @@
         #deepDiveButton:hover {
             background: rgba(0, 240, 255, 0.2);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
+        }
+        
+        /* New styles for math content */
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .chapter-card {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .chapter-card:hover {
+            background: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        
+        .chapter-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .chapter-desc {
+            font-size: 0.8rem;
+            color: rgba(224, 224, 255, 0.7);
+        }
+        
+        .problem-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .flight-data {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .problem-section {
+            flex: 1;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .problem-title {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .problem-content {
+            margin-bottom: 15px;
+        }
+        
+        .solution-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .submit-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: rgba(0, 240, 255, 0.2);
+        }
+        
+        .flight-plan-btn {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        
+        .flight-plan-btn:hover {
+            background: rgba(255, 62, 127, 0.2);
+        }
+        
+        .math-modal-content {
+            background: rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            width: 70vw;
+            height: 80vh;
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            position: relative;
+            overflow-y: auto;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -351,22 +483,27 @@
         </div>
     </div>
     <div style="position: fixed; top: 50%; left: 0; width: 100vw; text-align: center; transform: translateY(-50%); font-family: 'Share Tech Mono', monospace; font-size: 10rem; color: var(--primary); opacity: 0.1; pointer-events: none; z-index: 150;">AIRM</div>
-    <button id="buildButton">Build</button>
-    <button id="controlsButton">Controls</button>
-    <button id="challengesButton">Challenges</button>
-    <button id="connectButton">Connect</button>
-    <button id="tutorialButton">Tutorial</button>
-    <button id="class6Button" class="class-btn">Class 6</button>
-    <button id="class7Button" class="class-btn">Class 7</button>
-    <button id="class8Button" class="class-btn">Class 8</button>
-    <button id="class9Button" class="class-btn">Class 9</button>
-    <button id="class10Button" class="class-btn">Class 10</button>
-    <button id="class11Button" class="class-btn">Class 11</button>
-    <button id="class12Button" class="class-btn">Class 12</button>
+    
+    <!-- Right-side buttons with unified styling -->
+    <button id="buildButton" class="right-side-btn">Build</button>
+    <button id="controlsButton" class="right-side-btn">Controls</button>
+    <button id="challengesButton" class="right-side-btn">Challenges</button>
+    <button id="connectButton" class="right-side-btn">Connect</button>
+    <button id="tutorialButton" class="right-side-btn">Tutorial</button>
+    <button id="class6Btn" class="right-side-btn">Class 6</button>
+    <button id="class7Btn" class="right-side-btn">Class 7</button>
+    <button id="class8Btn" class="right-side-btn">Class 8</button>
+    <button id="class9Btn" class="right-side-btn">Class 9</button>
+    <button id="class10Btn" class="right-side-btn">Class 10</button>
+    <button id="class11Btn" class="right-side-btn">Class 11</button>
+    <button id="class12Btn" class="right-side-btn">Class 12</button>
+    
     <div id="buildStatus">
         <span id="statusMessage"></span>
         <button id="deepDiveButton">Deep Dive</button>
     </div>
+    
+    <!-- All modals remain the same as before -->
     <div class="modal" id="blockModal">
         <div class="modal-content">
             <button class="close-modal">×</button>
@@ -444,23 +581,27 @@
             <div class="modal-section" style="padding: 10px;">
                 <h4>Welcome</h4>
                 <p class="text-sm">This platform is designed to teach math and coding through drone programming for grades 6-12. Follow this guide to learn how to use each feature.</p>
+
                 <h4>1. Understanding the Interface</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Canvas:</strong> The main area displays blocks representing drone functions (e.g., Initialize System, Drive Motors).</li>
                     <li><strong>Header:</strong> Shows the platform title and connection status (green for connected, red for disconnected).</li>
-                    <li><strong>Right-Side Buttons:</strong> Control the workflow: Build, Controls, Challenges, Connect, Tutorial, and Class 6-12.</li>
+                    <li><strong>Right-Side Buttons:</strong> Control the workflow: Build, Controls, Challenges, Connect, Tutorial.</li>
                 </ul>
+
                 <h4>2. Interacting with Blocks</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Drag Blocks:</strong> Click and drag blocks to reposition them on the canvas, snapping to a 10x10 grid.</li>
                     <li><strong>View Details:</strong> Click a block to open a modal showing its code and related math equations.</li>
                     <li><strong>Select Blocks:</strong> Double-tap (touch) or double-click to select blocks, connecting them with yellow arrows to visualize workflow.</li>
                 </ul>
+
                 <h4>3. Building Code</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Build Button:</strong> Click "Build" to compile code from all blocks into a single program.</li>
                     <li><strong>Status:</strong> A status bar at the top shows "Successfully Built" or "Build Failed". If it fails, click "Deep Dive" to view error logs in a new window.</li>
                 </ul>
+
                 <h4>4. Controlling the Drone</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Controls Button:</strong> Opens a modal for basic flight controls (Grades 6-8).</li>
@@ -468,6 +609,7 @@
                     <li><strong>Speed:</strong> Adjust the throttle slider (0-100%) to set motor speed.</li>
                     <li><strong>Note:</strong> Requires a connected drone to send commands.</li>
                 </ul>
+
                 <h4>5. Completing Coding Challenges</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Challenges Button:</strong> Opens a modal with coding challenges (Grades 8-12).</li>
@@ -475,6 +617,7 @@
                     <li><strong>Advanced Challenge:</strong> Stabilize the drone by setting roll and pitch (-45 to 45) using <code>adjust_angle(roll, pitch)</code>.</li>
                     <li><strong>Output:</strong> Results are shown in the status bar, e.g., motor speeds or stability score.</li>
                 </ul>
+
                 <h4>6. Connecting to the Drone</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Connect Button:</strong> Opens a modal to connect to the drone.</li>
@@ -482,6 +625,7 @@
                     <li><strong>Connect:</strong> Click "Connect" to establish a WiFi connection. The status blinks "Connected" or "Disconnected" for 5 seconds.</li>
                     <li><strong>Header Indicator:</strong> Green dot indicates connected, red indicates disconnected.</li>
                 </ul>
+
                 <h4>7. Uploading Code</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li><strong>Upload Button:</strong> In the Connect modal, click "Upload" to send compiled code to the drone.</li>
@@ -489,42 +633,58 @@
                     <li><strong>Progress:</strong> A progress bar shows upload progress (0-100% over 5 seconds).</li>
                     <li><strong>Status:</strong> Blinks "Upload Complete" or "Upload Failed" for 5 seconds.</li>
                 </ul>
-                <h4>8. Using Class Modals</h4>
+
+                <h4>8. Using the Tutorial</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
-                    <li><strong>Class Buttons:</strong> Click "Class 6" to "Class 12" to open a modal with CBSE math chapters.</li>
-                    <li><strong>Chapters:</strong> Select a chapter to view last flight data and solve real-time problems to plan the next flight.</li>
+                    <li><strong>Tutorial Button:</strong> You're here! This modal provides a guide to all features.</li>
+                    <li><strong>Navigation:</strong> Scroll to read all sections. Click the "×" to close.</li>
                 </ul>
+
                 <h4>Tips</h4>
                 <ul style="list-style: disc; margin-left: 20px; font-size: 0.875rem;">
                     <li>Start with the "Build" button to compile code, then connect to the drone.</li>
                     <li>Use "Controls" for simple flight or "Challenges" for coding practice.</li>
-                    <li>Explore "Class" buttons to apply math concepts to drone flights.</li>
                     <li>Check the status bar for feedback on actions.</li>
                     <li>Revisit this tutorial anytime by clicking "Tutorial".</li>
                 </ul>
             </div>
         </div>
     </div>
+    
+    <!-- New modals for class chapters and math problems -->
     <div class="modal" id="classModal">
-        <div class="modal-content">
+        <div class="math-modal-content">
             <button class="close-modal">×</button>
-            <h3 id="classModalTitle"></h3>
-            <div id="chapterGrid" class="grid-cols-3"></div>
+            <h3 id="classModalTitle">CBSE Mathematics Chapters</h3>
+            <div class="chapters-grid" id="chaptersGrid">
+                <!-- Chapters will be populated by JavaScript -->
+            </div>
         </div>
     </div>
+    
     <div class="modal" id="chapterModal">
-        <div class="modal-content">
+        <div class="math-modal-content">
             <button class="close-modal">×</button>
-            <h3 id="chapterModalTitle"></h3>
-            <div class="modal-section">
-                <h4>Last Flight Data</h4>
-                <p id="flightData" class="text-xs"></p>
-            </div>
-            <div class="modal-section">
-                <h4>Real-Time Problem</h4>
-                <p id="problemText" class="text-xs"></p>
-                <textarea id="problemSolution" style="height: 100px; margin-top: 10px;" placeholder="Enter your solution (e.g., motor speed, angles)"></textarea>
-                <button id="submitSolution" style="margin-top: 10px;">Submit Solution</button>
+            <h3 id="chapterModalTitle">Chapter Problems</h3>
+            <div class="problem-container">
+                <div class="flight-data">
+                    <h4>Last Flight Data</h4>
+                    <div id="flightDataContent">
+                        <p>Flight Duration: 2 minutes 15 seconds</p>
+                        <p>Max Altitude: 12.5 meters</p>
+                        <p>Distance Traveled: 35.2 meters</p>
+                        <p>Battery Usage: 42%</p>
+                    </div>
+                </div>
+                <div class="problem-section">
+                    <div class="problem-title">Problem Statement</div>
+                    <div class="problem-content" id="problemContent">
+                        <!-- Problem content will be populated by JavaScript -->
+                    </div>
+                    <textarea class="solution-input" id="solutionInput" placeholder="Enter your solution here..."></textarea>
+                    <button class="submit-btn" id="submitSolution">Submit Solution</button>
+                    <button class="flight-plan-btn" id="planFlight">Plan Next Flight Based on Solution</button>
+                </div>
             </div>
         </div>
     </div>
@@ -539,6 +699,232 @@
         let isConnected = false;
         let isBuilt = false;
         let mainCpp = '';
+        let currentClass = '';
+        let currentChapter = '';
+
+        // CBSE Math Chapters for each class
+        const cbseMathChapters = {
+            "class6": [
+                { title: "Knowing Our Numbers", desc: "Understanding large numbers and their operations" },
+                { title: "Whole Numbers", desc: "Properties and operations of whole numbers" },
+                { title: "Playing with Numbers", desc: "Factors, multiples, prime and composite numbers" },
+                { title: "Basic Geometrical Ideas", desc: "Introduction to geometry concepts" },
+                { title: "Understanding Elementary Shapes", desc: "Classification and measurement of shapes" },
+                { title: "Integers", desc: "Positive and negative numbers" },
+                { title: "Fractions", desc: "Understanding and operations with fractions" },
+                { title: "Decimals", desc: "Decimal numbers and their operations" },
+                { title: "Data Handling", desc: "Collection and representation of data" },
+                { title: "Mensuration", desc: "Perimeter and area calculations" },
+                { title: "Algebra", desc: "Introduction to algebraic expressions" },
+                { title: "Ratio and Proportion", desc: "Understanding ratios and proportions" },
+                { title: "Symmetry", desc: "Recognizing symmetrical figures" },
+                { title: "Practical Geometry", desc: "Construction of geometrical figures" }
+            ],
+            "class7": [
+                { title: "Integers", desc: "Operations with positive and negative numbers" },
+                { title: "Fractions and Decimals", desc: "Advanced operations with fractions and decimals" },
+                { title: "Data Handling", desc: "Mean, median, mode and probability" },
+                { title: "Simple Equations", desc: "Solving basic algebraic equations" },
+                { title: "Lines and Angles", desc: "Properties of lines and angles" },
+                { title: "The Triangle and Its Properties", desc: "Types and properties of triangles" },
+                { title: "Congruence of Triangles", desc: "Understanding congruent figures" },
+                { title: "Comparing Quantities", desc: "Ratios, percentages and profit/loss" },
+                { title: "Rational Numbers", desc: "Understanding rational numbers" },
+                { title: "Practical Geometry", desc: "Construction of triangles and parallel lines" },
+                { title: "Perimeter and Area", desc: "Calculations for various shapes" },
+                { title: "Algebraic Expressions", desc: "Formation and simplification" },
+                { title: "Exponents and Powers", desc: "Laws of exponents and applications" },
+                { title: "Symmetry", desc: "Line symmetry and rotational symmetry" },
+                { title: "Visualizing Solid Shapes", desc: "3D shapes and their properties" }
+            ],
+            "class8": [
+                { title: "Rational Numbers", desc: "Operations with rational numbers" },
+                { title: "Linear Equations in One Variable", desc: "Solving linear equations" },
+                { title: "Understanding Quadrilaterals", desc: "Properties of quadrilaterals" },
+                { title: "Practical Geometry", desc: "Constructing quadrilaterals" },
+                { title: "Data Handling", desc: "Organizing and interpreting data" },
+                { title: "Squares and Square Roots", desc: "Properties and calculations" },
+                { title: "Cubes and Cube Roots", desc: "Understanding cubes and cube roots" },
+                { title: "Comparing Quantities", desc: "Percentages, profit/loss, discount" },
+                { title: "Algebraic Expressions and Identities", desc: "Operations and identities" },
+                { title: "Visualizing Solid Shapes", desc: "3D visualization and mapping" },
+                { title: "Mensuration", desc: "Area and volume calculations" },
+                { title: "Exponents and Powers", desc: "Laws and applications" },
+                { title: "Direct and Inverse Proportions", desc: "Understanding proportions" },
+                { title: "Factorization", desc: "Factorizing algebraic expressions" },
+                { title: "Introduction to Graphs", desc: "Basic concepts of graphs" },
+                { title: "Playing with Numbers", desc: "Number patterns and puzzles" }
+            ],
+            "class9": [
+                { title: "Number Systems", desc: "Real numbers and their properties" },
+                { title: "Polynomials", desc: "Operations with polynomials" },
+                { title: "Coordinate Geometry", desc: "Cartesian plane and plotting points" },
+                { title: "Linear Equations in Two Variables", desc: "Graphical solutions" },
+                { title: "Introduction to Euclid's Geometry", desc: "Basic concepts" },
+                { title: "Lines and Angles", desc: "Properties and theorems" },
+                { title: "Triangles", desc: "Congruency and properties" },
+                { title: "Quadrilaterals", desc: "Properties and theorems" },
+                { title: "Areas of Parallelograms and Triangles", desc: "Calculations" },
+                { title: "Circles", desc: "Properties and theorems" },
+                { title: "Constructions", desc: "Geometric constructions" },
+                { title: "Heron's Formula", desc: "Area of triangles" },
+                { title: "Surface Areas and Volumes", desc: "3D shapes calculations" },
+                { title: "Statistics", desc: "Data representation and analysis" },
+                { title: "Probability", desc: "Basic probability concepts" }
+            ],
+            "class10": [
+                { title: "Real Numbers", desc: "Euclid's division algorithm, HCF, LCM" },
+                { title: "Polynomials", desc: "Zeroes and graphs of polynomials" },
+                { title: "Pair of Linear Equations in Two Variables", desc: "Graphical and algebraic methods" },
+                { title: "Quadratic Equations", desc: "Solutions and applications" },
+                { title: "Arithmetic Progressions", desc: "nth term and sum of terms" },
+                { title: "Triangles", desc: "Similarity and theorems" },
+                { title: "Coordinate Geometry", desc: "Distance formula and section formula" },
+                { title: "Introduction to Trigonometry", desc: "Ratios and identities" },
+                { title: "Some Applications of Trigonometry", desc: "Heights and distances" },
+                { title: "Circles", desc: "Tangents and properties" },
+                { title: "Constructions", desc: "Division of line segment, tangent construction" },
+                { title: "Areas Related to Circles", desc: "Perimeter and area calculations" },
+                { title: "Surface Areas and Volumes", desc: "Combinations of solids" },
+                { title: "Statistics", desc: "Mean, median, mode of grouped data" },
+                { title: "Probability", desc: "Theoretical probability" }
+            ],
+            "class11": [
+                { title: "Sets", desc: "Types of sets and operations" },
+                { title: "Relations and Functions", desc: "Types of relations and functions" },
+                { title: "Trigonometric Functions", desc: "Identities and equations" },
+                { title: "Principle of Mathematical Induction", desc: "Proof technique" },
+                { title: "Complex Numbers and Quadratic Equations", desc: "Operations and solutions" },
+                { title: "Linear Inequalities", desc: "Algebraic and graphical solutions" },
+                { title: "Permutations and Combinations", desc: "Counting principles" },
+                { title: "Binomial Theorem", desc: "Expansion of binomial expressions" },
+                { title: "Sequences and Series", desc: "Arithmetic and geometric progressions" },
+                { title: "Straight Lines", desc: "Slope and equations" },
+                { title: "Conic Sections", desc: "Circle, parabola, ellipse, hyperbola" },
+                { title: "Introduction to Three Dimensional Geometry", desc: "Coordinate system in 3D" },
+                { title: "Limits and Derivatives", desc: "Basic concepts of calculus" },
+                { title: "Mathematical Reasoning", desc: "Statements and logical operations" },
+                { title: "Statistics", desc: "Measures of dispersion" },
+                { title: "Probability", desc: "Random experiments and events" }
+            ],
+            "class12": [
+                { title: "Relations and Functions", desc: "Types of relations and functions" },
+                { title: "Inverse Trigonometric Functions", desc: "Properties and graphs" },
+                { title: "Matrices", desc: "Operations and properties" },
+                { title: "Determinants", desc: "Properties and applications" },
+                { title: "Continuity and Differentiability", desc: "Limits and derivatives" },
+                { title: "Application of Derivatives", desc: "Rate of change, increasing/decreasing functions" },
+                { title: "Integrals", desc: "Indefinite and definite integrals" },
+                { title: "Application of Integrals", desc: "Area under curves" },
+                { title: "Differential Equations", desc: "Formation and solutions" },
+                { title: "Vector Algebra", desc: "Scalar and vector products" },
+                { title: "Three Dimensional Geometry", desc: "Direction cosines, lines and planes" },
+                { title: "Linear Programming", desc: "Graphical method" },
+                { title: "Probability", desc: "Conditional probability, Bayes' theorem" }
+            ]
+        };
+
+        // Math problems related to drone flight for each chapter
+        const mathProblems = {
+            "class6": {
+                "Knowing Our Numbers": {
+                    problem: "Your drone's flight controller recorded the following altitude readings (in meters) during a flight: 12, 5, 18, 7, 15, 9, 20. \n\n1. Arrange these numbers in ascending and descending order. \n2. Find the difference between the highest and lowest altitude. \n3. If the drone's maximum safe altitude is 25 meters, how much higher could it have gone without exceeding this limit?",
+                    flightImpact: "Understanding these numbers helps in setting safe altitude limits for autonomous flights."
+                },
+                "Whole Numbers": {
+                    problem: "A drone's battery lasts for 150 minutes of continuous flight. \n\n1. If you fly the drone for 35 minutes, how much battery time remains? \n2. You want to divide the remaining battery time equally among 3 different flight missions. How long can each mission be? \n3. If each mission requires at least 25 minutes, is the battery sufficient for all 3 missions?",
+                    flightImpact: "Calculating battery usage helps in planning multiple flight missions efficiently."
+                },
+                "Fractions": {
+                    problem: "Your drone's battery was fully charged (1 unit). After the first flight, 1/4 of the charge was used. After the second flight, another 1/3 of the original charge was used. \n\n1. What fraction of the battery remains after these two flights? \n2. If the third flight uses 1/6 of the original charge, will there be any battery left? \n3. If each flight uses exactly 1/5 of the current remaining charge, how many full flights can you complete before the battery is completely drained?",
+                    flightImpact: "Understanding fractions helps in precise battery management for multiple flights."
+                }
+            },
+            "class7": {
+                "Integers": {
+                    problem: "Your drone's altitude changes during a flight are recorded as: +15m, -8m, +12m, -5m, +20m, -15m (positive numbers mean ascent, negative mean descent). \n\n1. What is the drone's final altitude change from its starting point? \n2. What was the maximum altitude reached during the flight? \n3. If the drone started at 50m above ground level, what was its lowest point during the flight?",
+                    flightImpact: "Tracking altitude changes helps in maintaining safe flight paths and avoiding obstacles."
+                },
+                "Data Handling": {
+                    problem: "You recorded the following flight durations (in minutes) for 10 drone flights: 12, 15, 18, 10, 22, 14, 16, 19, 11, 13. \n\n1. Calculate the mean, median and mode of these flight times. \n2. What is the range of flight durations? \n3. If you need to plan for flights lasting at least 15 minutes, what percentage of your flights meet this requirement?",
+                    flightImpact: "Analyzing flight data helps in predicting battery needs and scheduling maintenance."
+                },
+                "Simple Equations": {
+                    problem: "The total weight of your drone and its payload is 1.2kg. The drone can lift 0.8kg more than its own weight (without payload). \n\n1. Write an equation to represent the maximum payload capacity. \n2. If you want to carry a payload of 1kg, how much should the drone itself weigh to stay within limits? \n3. If the drone weighs 0.7kg, what's the maximum payload it can carry?",
+                    flightImpact: "Understanding weight limits is crucial for safe takeoff and stable flight."
+                }
+            },
+            "class8": {
+                "Linear Equations in One Variable": {
+                    problem: "Your drone's battery takes 90 minutes to charge fully. After charging for some time, you notice it's 60% charged. \n\n1. Write an equation to find how long it has been charging. \n2. Solve the equation to find the charging time. \n3. If you only have 30 minutes to charge, what percentage of the battery will be charged?",
+                    flightImpact: "Calculating charging times helps in planning flight schedules efficiently."
+                },
+                "Squares and Square Roots": {
+                    problem: "The area covered by your drone's camera is a square. At 10m altitude, it covers 16m². \n\n1. What is the length of one side of this square area? \n2. If the area covered is proportional to the square of the altitude, what area would it cover at 15m altitude? \n3. At what altitude would the drone cover an area of 36m²?",
+                    flightImpact: "Understanding coverage area helps in planning aerial photography missions."
+                },
+                "Direct and Inverse Proportions": {
+                    problem: "Your drone's battery life is inversely proportional to the payload weight. With no payload, the battery lasts 30 minutes. \n\n1. If with a 200g payload the battery lasts 25 minutes, what's the constant of proportionality? \n2. How long would the battery last with a 500g payload? \n3. What payload would reduce the battery life to 15 minutes?",
+                    flightImpact: "Understanding these relationships helps in optimizing payload vs flight time."
+                }
+            },
+            "class9": {
+                "Coordinate Geometry": {
+                    problem: "Your drone's flight path forms a triangle with vertices at coordinates A(0,0), B(30,40), and C(60,0) (units in meters). \n\n1. Calculate the lengths of all three sides of the flight path. \n2. Find the area covered by this flight path. \n3. If the drone needs to return to its starting point from point C, what is the shortest possible distance it can travel?",
+                    flightImpact: "Coordinate geometry helps in precise flight path planning and navigation."
+                },
+                "Triangles": {
+                    problem: "From your launch point, you send the drone to two locations forming a triangle. The first leg is 50m at 30° NE, the second is 70m at 45° NW. \n\n1. Using the triangle inequality theorem, what are the possible distances back to the launch point? \n2. If the angle between the two legs is 75°, calculate the exact return distance. \n3. What would be the area covered by this triangular flight path?",
+                    flightImpact: "Understanding triangular properties helps in calculating flight distances and coverage areas."
+                },
+                "Heron's Formula": {
+                    problem: "Your drone's flight path forms a triangle with sides 120m, 170m, and 190m. \n\n1. Calculate the semi-perimeter of this flight path. \n2. Using Heron's formula, find the area covered by this flight. \n3. If the drone flies at 5m/s, how long would it take to complete this triangular path?",
+                    flightImpact: "Calculating area helps in determining coverage for aerial surveys or photography."
+                }
+            },
+            "class10": {
+                "Quadratic Equations": {
+                    problem: "The altitude (h in meters) of your drone during a flight follows the equation h = -0.2t² + 3t + 10, where t is time in seconds. \n\n1. What is the drone's starting altitude? \n2. After how many seconds will the drone reach its maximum altitude? \n3. What is the maximum altitude reached? \n4. When will the drone return to the starting altitude?",
+                    flightImpact: "Understanding this trajectory helps in planning altitude changes during flights."
+                },
+                "Trigonometry": {
+                    problem: "You're flying your drone to inspect a 20m tall building. At a certain point, the angle of elevation to the top of the building is 45°. \n\n1. How far is the drone from the building at this point? \n2. If the drone moves 10m closer, what's the new angle of elevation? \n3. What's the minimum distance the drone can be from the building while still seeing the top (assuming camera angle limits)?",
+                    flightImpact: "Trigonometric calculations are essential for precise positioning during inspections."
+                },
+                "Probability": {
+                    problem: "Historical data shows your drone has a 5% chance of losing GPS signal, a 3% chance of battery failure, and a 1% chance of both happening simultaneously. \n\n1. What's the probability of at least one of these issues occurring? \n2. What's the probability of having GPS signal but no battery failure? \n3. If you fly 100 missions, how many would you expect to complete without either issue?",
+                    flightImpact: "Understanding probabilities helps in risk assessment and mission planning."
+                }
+            },
+            "class11": {
+                "Straight Lines": {
+                    problem: "Your drone's flight path follows a straight line from point A(2,3) to point B(8,12) on a coordinate grid (units in 100m). \n\n1. Find the slope of this flight path. \n2. Determine the equation of the line representing this path. \n3. If there's an obstacle at (5,7.5), will the drone's path intersect it? \n4. How far does the drone travel in meters?",
+                    flightImpact: "Straight line equations help in programming precise autonomous flight paths."
+                },
+                "Conic Sections": {
+                    problem: "Your drone's camera has a 90° field of view, creating a circular coverage area on the ground. At 100m altitude, the coverage has radius 100m. \n\n1. Write the equation of this circular coverage area. \n2. If the drone moves to (50,75) in the xy plane, what's the new equation? \n3. What percentage of a 200m × 200m square field is covered when the drone is at its center at 100m altitude?",
+                    flightImpact: "Understanding conic sections helps in planning camera coverage for aerial photography."
+                },
+                "Limits and Derivatives": {
+                    problem: "Your drone's altitude (h in meters) changes with time (t in seconds) according to h(t) = t³ - 9t² + 24t + 10. \n\n1. Find the drone's velocity function (dh/dt). \n2. At what times is the drone stationary? \n3. What is the maximum altitude reached in the first 5 seconds? \n4. What's the drone's acceleration at t=2s?",
+                    flightImpact: "Understanding motion through calculus helps in programming smooth flight maneuvers."
+                }
+            },
+            "class12": {
+                "Matrices": {
+                    problem: "Your drone's position can be represented as a transformation matrix. Starting at origin (0,0,0), it undergoes: \n1. Rotation of 30° about z-axis \n2. Translation of (5,10,15) \n3. Scaling by 2 in x-direction \n\n1. Write the individual transformation matrices. \n2. Find the final transformation matrix (in order). \n3. Where does point (1,1,1) end up after these transformations?",
+                    flightImpact: "Matrix transformations are fundamental to 3D flight path calculations and computer vision."
+                },
+                "Differential Equations": {
+                    problem: "Your drone's altitude h(t) follows the differential equation: dh/dt = -0.1h + 20, where h is in meters and t in seconds. \n\n1. Solve this differential equation with initial condition h(0)=10. \n2. What is the steady-state altitude? \n3. How long does it take to reach 95% of this steady-state value? \n4. What does this model suggest about the drone's altitude control?",
+                    flightImpact: "Differential equations model dynamic systems like altitude control in drones."
+                },
+                "Probability": {
+                    problem: "Your drone's navigation system has three redundant sensors. Each has a 1% chance of failure, independently. \n\n1. What's the probability all three fail simultaneously? \n2. What's the probability at least one works? \n3. If two sensors fail, the drone can still operate with 50% reduced performance. What's the probability of this reduced performance mode? \n4. What's the expected number of working sensors?",
+                    flightImpact: "Probability calculations are crucial for reliability engineering in drone systems."
+                }
+            }
+        };
 
         const blockData = {
             initialize_system: {
@@ -862,7 +1248,8 @@ void DroneSystem::main_task(void* arg) {
         vTaskDelay((int)(DT * 1000) / portTICK_PERIOD_MS);
     }
 }`,
-                equations: `\\[ T_{\\text{loop}} = \\Delta t = 0.01 \\text{s Bod}\\]`
+                equations: `\\[ T_{\\text{loop}} = \\Delta t = 0.01 \\text{s} \\]
+\\[ m_i = T + u_{\\text{pitch}} + u_{\\text{roll}} + u_{\\text{yaw}} \\]`
             },
             challenges: {
                 set_speed: {
@@ -885,167 +1272,6 @@ void DroneSystem::main_task(void* arg) {
 \\[ \\theta_{\\text{pitch}} = \\max(\\min(\\text{pitch}, 45), -45) \\]`
                 }
             }
-        };
-
-        const cbseMathChapters = {
-            class6: [
-                "Knowing Our Numbers",
-                "Whole Numbers",
-                "Playing with Numbers",
-                "Basic Geometrical Ideas",
-                "Understanding Elementary Shapes",
-                "Integers",
-                "Fractions",
-                "Decimals",
-                "Data Handling",
-                "Mensuration",
-                "Algebra",
-                "Ratio and Proportion",
-                "Symmetry",
-                "Practical Geometry"
-            ],
-            class7: [
-                "Integers",
-                "Fractions and Decimals",
-                "Data Handling",
-                "Simple Equations",
-                "Lines and Angles",
-                "The Triangle and its Properties",
-                "Congruence of Triangles",
-                "Comparing Quantities",
-                "Rational Numbers",
-                "Practical Geometry",
-                "Perimeter and Area",
-                "Algebraic Expressions",
-                "Exponents and Powers",
-                "Symmetry",
-                "Visualising Solid Shapes"
-            ],
-            class8: [
-                "Rational Numbers",
-                "Linear Equations in One Variable",
-                "Understanding Quadrilaterals",
-                "Practical Geometry",
-                "Data Handling",
-                "Squares and Square Roots",
-                "Cubes and Cube Roots",
-                "Comparing Quantities",
-                "Algebraic Expressions and Identities",
-                "Visualising Solid Shapes",
-                "Mensuration",
-                "Exponents and Powers",
-                "Direct and Inverse Proportions",
-                "Factorisation",
-                "Introduction to Graphs",
-                "Playing with Numbers"
-            ],
-            class9: [
-                "Number Systems",
-                "Polynomials",
-                "Coordinate Geometry",
-                "Linear Equations in Two Variables",
-                "Introduction to Euclid’s Geometry",
-                "Lines and Angles",
-                "Triangles",
-                "Quadrilaterals",
-                "Areas of Parallelograms and Triangles",
-                "Circles",
-                "Constructions",
-                "Heron’s Formula",
-                "Surface Areas and Volumes",
-                "Statistics",
-                "Probability"
-            ],
-            class10: [
-                "Real Numbers",
-                "Polynomials",
-                "Pair of Linear Equations in Two Variables",
-                "Quadratic Equations",
-                "Arithmetic Progressions",
-                "Triangles",
-                "Coordinate Geometry",
-                "Introduction to Trigonometry",
-                "Some Applications of Trigonometry",
-                "Circles",
-                "Constructions",
-                "Areas Related to Circles",
-                "Surface Areas and Volumes",
-                "Statistics",
-                "Probability"
-            ],
-            class11: [
-                "Sets",
-                "Relations and Functions",
-                "Trigonometric Functions",
-                "Principle of Mathematical Induction",
-                "Complex Numbers and Quadratic Equations",
-                "Linear Inequalities",
-                "Permutations and Combinations",
-                "Binomial Theorem",
-                "Sequences and Series",
-                "Straight Lines",
-                "Conic Sections",
-                "Introduction to Three Dimensional Geometry",
-                "Limits and Derivatives",
-                "Mathematical Reasoning",
-                "Statistics",
-                "Probability"
-            ],
-            class12: [
-                "Relations and Functions",
-                "Inverse Trigonometric Functions",
-                "Matrices",
-                "Determinants",
-                "Continuity and Differentiability",
-                "Application of Derivatives",
-                "Integrals",
-                "Application of Integrals",
-                "Differential Equations",
-                "Vector Algebra",
-                "Three Dimensional Geometry",
-                "Linear Programming",
-                "Probability"
-            ]
-        };
-
-        const chapterProblems = {
-            "Knowing Our Numbers": {
-                problem: "Calculate the drone's altitude to hover at 5 meters using place value. If each meter requires a motor speed increase of 10%, what is the required speed?",
-                solution: "50%"
-            },
-            "Integers": {
-                problem: "The drone needs to adjust its roll by -10 degrees to correct its position. If the current roll is 5 degrees, calculate the new roll angle.",
-                solution: "-5 degrees"
-            },
-            "Rational Numbers": {
-                problem: "The drone's battery level is at 3/4 of its capacity. If it consumes 1/8 of the battery per minute, how many minutes can it fly?",
-                solution: "6 minutes"
-            },
-            "Number Systems": {
-                problem: "Convert the drone's speed of 50% to a binary number for motor control (0-65535). What is the binary equivalent of the motor speed?",
-                solution: "1000000000000000"
-            },
-            "Real Numbers": {
-                problem: "The drone's distance from the target is √50 meters. Approximate this to two decimal places for flight planning.",
-                solution: "7.07 meters"
-            },
-            "Sets": {
-                problem: "The drone can perform {hover, forward, rotate}. If it must choose 2 actions for a maneuver, how many combinations are possible?",
-                solution: "3 combinations"
-            },
-            "Relations and Functions": {
-                problem: "The drone's height h is a function of time t, h(t) = 2t. Calculate the height after 3 seconds.",
-                solution: "6 meters"
-            }
-        };
-
-        let lastFlightData = {
-            roll: 5.2,
-            pitch: -3.1,
-            yaw: 10.0,
-            height: 1.5,
-            battery: 75,
-            motorSpeeds: [32000, 32500, 31800, 32200]
         };
 
         function setupInteract() {
@@ -1163,40 +1389,49 @@ void DroneSystem::main_task(void* arg) {
             modal.style.display = 'flex';
         }
 
-        function showClassModal(classGrade) {
+        function showClassModal(classId) {
+            currentClass = classId;
             const modal = document.getElementById('classModal');
             const modalTitle = document.getElementById('classModalTitle');
-            const chapterGrid = document.getElementById('chapterGrid');
-            modalTitle.textContent = `Class ${classGrade} CBSE Math Chapters`;
-            chapterGrid.innerHTML = '';
-
-            const chapters = cbseMathChapters[`class${classGrade}`];
-            chapters.forEach(chapter => {
-                const button = document.createElement('button');
-                button.className = 'chapter-btn';
-                button.textContent = chapter;
-                button.addEventListener('click', () => showChapterModal(classGrade, chapter));
-                chapterGrid.appendChild(button);
+            const chaptersGrid = document.getElementById('chaptersGrid');
+            
+            modalTitle.textContent = `CBSE Mathematics - Class ${classId.replace('class', '')}`;
+            chaptersGrid.innerHTML = '';
+            
+            // Populate chapters grid
+            cbseMathChapters[classId].forEach(chapter => {
+                const card = document.createElement('div');
+                card.className = 'chapter-card';
+                card.innerHTML = `
+                    <div class="chapter-title">${chapter.title}</div>
+                    <div class="chapter-desc">${chapter.desc}</div>
+                `;
+                card.addEventListener('click', () => showChapterModal(chapter.title));
+                chaptersGrid.appendChild(card);
             });
-
+            
             modal.style.display = 'flex';
         }
 
-        function showChapterModal(classGrade, chapter) {
+        function showChapterModal(chapterTitle) {
+            currentChapter = chapterTitle;
             const modal = document.getElementById('chapterModal');
             const modalTitle = document.getElementById('chapterModalTitle');
-            const flightData = document.getElementById('flightData');
-            const problemText = document.getElementById('problemText');
-            modalTitle.textContent = `${chapter} (Class ${classGrade})`;
-
-            flightData.textContent = `Roll: ${lastFlightData.roll}°, Pitch: ${lastFlightData.pitch}°, Yaw: ${lastFlightData.yaw}°, Height: ${lastFlightData.height}m, Battery: ${lastFlightData.battery}%, Motor Speeds: [${lastFlightData.motorSpeeds.join(', ')}]`;
-
-            const problem = chapterProblems[chapter] || {
-                problem: `Apply concepts from ${chapter} to plan the next flight. Suggest motor speeds or angles.`,
-                solution: "User-defined"
-            };
-            problemText.textContent = problem.problem;
-
+            const problemContent = document.getElementById('problemContent');
+            
+            modalTitle.textContent = `${currentClass.replace('class', 'Class ')} - ${chapterTitle}`;
+            
+            // Find the problem for this chapter
+            const chapterProblems = mathProblems[currentClass];
+            if (chapterProblems && chapterProblems[chapterTitle]) {
+                problemContent.innerHTML = `
+                    <p>${chapterProblems[chapterTitle].problem.replace(/\n/g, '<br>')}</p>
+                    <p><strong>Flight Impact:</strong> ${chapterProblems[chapterTitle].flightImpact}</p>
+                `;
+            } else {
+                problemContent.innerHTML = `<p>No problems available for this chapter yet.</p>`;
+            }
+            
             modal.style.display = 'flex';
         }
 
@@ -1292,35 +1527,6 @@ void DroneSystem::main_task(void* arg) {
             }
             console.log(`Sending command: ${command}`);
             showBuildStatus(`Command: ${command}`);
-            updateFlightData(command);
-        }
-
-        function updateFlightData(command) {
-            const parts = command.split(':');
-            if (parts[0] === 'set_speed') {
-                const speed = parseFloat(parts[1]);
-                lastFlightData.motorSpeeds = [speed * 65535 / 100, speed * 65535 / 100, speed * 65535 / 100, speed * 65535 / 100];
-                lastFlightData.height = speed / 100 * 2;
-            } else if (parts[0] === 'adjust_angle') {
-                const [roll, pitch] = parts[1].split(',').map(parseFloat);
-                lastFlightData.roll = roll;
-                lastFlightData.pitch = pitch;
-            } else if (parts[0] === 'set_throttle') {
-                const throttle = parseFloat(parts[1]) * 100;
-                lastFlightData.motorSpeeds = lastFlightData.motorSpeeds.map(() => throttle * 65535 / 100);
-                lastFlightData.height = throttle / 100 * 2;
-            } else if (command === 'hover') {
-                lastFlightData.height = 1.0;
-                lastFlightData.roll = 0;
-                lastFlightData.pitch = 0;
-            } else if (command === 'forward') {
-                lastFlightData.pitch = 10;
-            } else if (command === 'rotate_left') {
-                lastFlightData.yaw -= 10;
-            } else if (command === 'rotate_right') {
-                lastFlightData.yaw += 10;
-            }
-            lastFlightData.battery = Math.max(lastFlightData.battery - 1, 0);
         }
 
         function runBeginnerChallenge() {
@@ -1340,217 +1546,279 @@ void DroneSystem::main_task(void* arg) {
         }
 
         function runAdvancedChallenge() {
-            runAdvancedChallenge() {
-    const rollInput = document.getElementById('advancedRoll').value;
-    const pitchInput = document.getElementById('advancedPitch').value;
-    const code = document.getElementById('advancedCode').value;
-    const roll = parseFloat(rollInput);
-    const pitch = parseFloat(pitchInput);
+            const rollInput = document.getElementById('advancedRoll').value;
+            const pitchInput = document.getElementById('advancedPitch').value;
+            const code = document.getElementById('advancedCode').value;
+            const roll = parseFloat(rollInput);
+            const pitch = parseFloat(pitchInput);
 
-    if (isNaN(roll) || isNaN(pitch) || roll < -45 || roll > 45 || pitch < -45 || pitch > 45) {
-        showBuildStatus('Invalid roll or pitch value (-45 to 45 required)', true);
-        return;
-    }
+            if (isNaN(roll) || roll < -45 || roll > 45 || isNaN(pitch) || pitch < -45 || pitch > 45) {
+                showBuildStatus('Invalid roll/pitch values (-45 to 45 required)', true);
+                return;
+            }
 
-    // Simulate drone stabilization: calculate stability score based on how close roll and pitch are to 0
-    const stabilityScore = 100 - (Math.abs(roll) + Math.abs(pitch)) * 2;
-    const simulatedResponse = `Drone stabilized: Roll=${roll}°, Pitch=${pitch}°, Stability Score=${stabilityScore.toFixed(2)}%`;
-    showBuildStatus('Advanced Challenge: ' + simulatedResponse);
-    sendCommand(`adjust_angle:${roll},${pitch}`);
-}
-
-function submitSolution() {
-    const solutionInput = document.getElementById('problemSolution').value.trim();
-    const chapter = document.getElementById('chapterModalTitle').textContent.split(' (')[0];
-    const expectedSolution = chapterProblems[chapter]?.solution || 'User-defined';
-
-    if (!solutionInput) {
-        showBuildStatus('Please enter a solution', true);
-        return;
-    }
-
-    // Simulate solution validation
-    const isCorrect = expectedSolution === 'User-defined' || solutionInput.toLowerCase() === expectedSolution.toLowerCase();
-    if (isCorrect) {
-        showBuildStatus(`Solution for ${chapter} accepted`);
-        // Update flight data based on solution if applicable
-        if (chapterProblems[chapter]?.solution.includes('%')) {
-            const speed = parseFloat(solutionInput) || 50;
-            sendCommand(`set_speed:${speed}`);
-        } else if (chapterProblems[chapter]?.solution.includes('degrees')) {
-            const angle = parseFloat(solutionInput) || 0;
-            sendCommand(`adjust_angle:${angle},0`);
+            const stabilityScore = Math.abs(roll) + Math.abs(pitch);
+            const simulatedResponse = `Drone stabilized: Roll=${roll}, Pitch=${pitch}\n` +
+                                     `Stability Score: ${stabilityScore.toFixed(2)} (lower is better)`;
+            showBuildStatus('Advanced Challenge: ' + simulatedResponse);
+            sendCommand(`adjust_angle:${roll},${pitch}`);
         }
-    } else {
-        showBuildStatus(`Incorrect solution for ${chapter}. Expected: ${expectedSolution}`, true);
-    }
-}
 
-function setupEventListeners() {
-    // Block click and double-click/tap for modal and selection
-    document.querySelectorAll('.block').forEach(block => {
-        block.addEventListener('click', () => {
-            if (!isDragging) {
-                const currentTime = new Date().getTime();
-                if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
-                    // Double-tap/click: select block
-                    if (!block.classList.contains('selected')) {
-                        block.classList.add('selected');
-                        selectedBlocks.push(block);
-                        updateArrows();
+        function handleConnect() {
+            const droneId = document.getElementById('droneId').value.trim();
+            const password = document.getElementById('dronePassword').value;
+            const droneStatus = document.getElementById('droneStatus');
+            const connectionIndicator = document.getElementById('connectionIndicator');
+            const connectionStatus = document.getElementById('connectionStatus');
+
+            if (droneId === '' || password.length < 8) {
+                showBuildStatus('Invalid Drone ID or Password (minimum 8 characters)', true);
+                droneStatus.textContent = 'Status: Invalid Credentials';
+                droneStatus.style.animation = 'blink 1s infinite';
+                setTimeout(() => {
+                    droneStatus.style.animation = 'none';
+                }, 5000);
+                return;
+            }
+
+            const isSuccess = Math.random() < 0.7;
+            if (isSuccess) {
+                isConnected = true;
+                droneStatus.textContent = 'Status: Connected';
+                droneStatus.style.animation = 'blink 1s infinite';
+                connectionIndicator.classList.remove('bg-red-500');
+                connectionIndicator.classList.add('bg-green-500');
+                connectionStatus.textContent = 'Connected';
+                showBuildStatus(`Connected to Drone ${droneId}`);
+            } else {
+                isConnected = false;
+                droneStatus.textContent = 'Status: Disconnected';
+                droneStatus.style.animation = 'blink 1s infinite';
+                connectionIndicator.classList.remove('bg-green-500');
+                connectionIndicator.classList.add('bg-red-500');
+                connectionStatus.textContent = 'Disconnected';
+                showBuildStatus('Connection Failed', true);
+            }
+
+            setTimeout(() => {
+                droneStatus.style.animation = 'none';
+            }, 5000);
+        }
+
+        function handleUpload() {
+            const uploadProgress = document.getElementById('uploadProgress');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const droneId = document.getElementById('droneId').value.trim();
+
+            if (!isConnected) {
+                showBuildStatus('Drone not connected', true);
+                uploadStatus.textContent = 'Upload Status: Not Connected';
+                uploadStatus.style.animation = 'blink 1s infinite';
+                setTimeout(() => {
+                    uploadStatus.style.animation = 'none';
+                }, 5000);
+                return;
+            }
+
+            if (!isBuilt) {
+                showBuildStatus('No successful build available', true);
+                uploadStatus.textContent = 'Upload Status: No Build';
+                uploadStatus.style.animation = 'blink 1s infinite';
+                setTimeout(() => {
+                    uploadStatus.style.animation = 'none';
+                }, 5000);
+                return;
+            }
+
+            uploadProgress.value = 0;
+            uploadStatus.textContent = 'Upload Status: Uploading';
+            uploadStatus.style.animation = 'blink 1s infinite';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                uploadProgress.value = progress;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    const isSuccess = Math.random() < 0.7;
+                    if (isSuccess) {
+                        uploadStatus.textContent = 'Upload Status: Upload Complete';
+                        showBuildStatus(`Code uploaded to Drone ${droneId}`);
+                    } else {
+                        uploadStatus.textContent = 'Upload Status: Upload Failed';
+                        showBuildStatus('Upload Failed', true);
                     }
-                    lastTappedBlock = null;
+                    uploadStatus.style.animation = 'blink 1s infinite';
+                    setTimeout(() => {
+                        uploadStatus.style.animation = 'none';
+                    }, 5000);
+                }
+            }, 100);
+        }
+
+        function setupControlListeners() {
+            document.getElementById('hoverBtn').addEventListener('click', () => sendCommand('hover'));
+            document.getElementById('forwardBtn').addEventListener('click', () => sendCommand('forward'));
+            document.getElementById('rotateLeftBtn').addEventListener('click', () => sendCommand('rotate_left'));
+            document.getElementById('rotateRightBtn').addEventListener('click', () => sendCommand('rotate_right'));
+            const throttleSlider = document.getElementById('throttleSlider');
+            const throttleValue = document.getElementById('throttleValue');
+            throttleSlider.addEventListener('input', () => {
+                throttleValue.textContent = throttleSlider.value;
+                sendCommand(`set_throttle:${throttleSlider.value / 100}`);
+            });
+        }
+
+        function setupChallengeListeners() {
+            document.getElementById('runBeginnerChallenge').addEventListener('click', runBeginnerChallenge);
+            document.getElementById('runAdvancedChallenge').addEventListener('click', runAdvancedChallenge);
+        }
+
+        function setupConnectListeners() {
+            document.getElementById('connectDroneButton').addEventListener('click', handleConnect);
+            document.getElementById('uploadCodeButton').addEventListener('click', handleUpload);
+        }
+
+        function setupClassListeners() {
+            document.getElementById('class6Btn').addEventListener('click', () => showClassModal('class6'));
+            document.getElementById('class7Btn').addEventListener('click', () => showClassModal('class7'));
+            document.getElementById('class8Btn').addEventListener('click', () => showClassModal('class8'));
+            document.getElementById('class9Btn').addEventListener('click', () => showClassModal('class9'));
+            document.getElementById('class10Btn').addEventListener('click', () => showClassModal('class10'));
+            document.getElementById('class11Btn').addEventListener('click', () => showClassModal('class11'));
+            document.getElementById('class12Btn').addEventListener('click', () => showClassModal('class12'));
+            
+            // Chapter modal listeners
+            document.getElementById('submitSolution').addEventListener('click', () => {
+                const solution = document.getElementById('solutionInput').value;
+                showBuildStatus(`Solution submitted for ${currentClass.replace('class', 'Class ')} - ${currentChapter}`);
+            });
+            
+            document.getElementById('planFlight').addEventListener('click', () => {
+                showBuildStatus(`Planning next flight based on ${currentChapter} solution`);
+            });
+        }
+
+        function setupBlockListeners() {
+            document.querySelectorAll('.block').forEach(block => {
+                block.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    handleInteraction(block, false);
+                });
+
+                block.addEventListener('touchstart', (event) => {
+                    event.preventDefault();
+                    handleInteraction(block, true);
+                });
+            });
+
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const modal = event.target.closest('.modal').id;
+                    closeModal(modal);
+                });
+            });
+
+            document.getElementById('blockModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('blockModal');
+            });
+
+            document.getElementById('controlsModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('controlsModal');
+            });
+
+            document.getElementById('challengesModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('challengesModal');
+            });
+
+            document.getElementById('connectModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('connectModal');
+            });
+
+            document.getElementById('tutorialModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('tutorialModal');
+            });
+
+            document.getElementById('classModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('classModal');
+            });
+
+            document.getElementById('chapterModal').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) closeModal('chapterModal');
+            });
+
+            document.getElementById('buildButton').addEventListener('click', handleBuild);
+            document.getElementById('controlsButton').addEventListener('click', showControlsModal);
+            document.getElementById('challengesButton').addEventListener('click', showChallengesModal);
+            document.getElementById('connectButton').addEventListener('click', showConnectModal);
+            document.getElementById('tutorialButton').addEventListener('click', showTutorialModal);
+            document.getElementById('deepDiveButton').addEventListener('click', showDeepDive);
+        }
+
+        function handleInteraction(block, isTouch) {
+            if (isDragging) return;
+
+            const currentTime = new Date().getTime();
+            if (isTouch) {
+                if (currentTime - lastTapTime < 300 && lastTappedBlock === block) {
                     clearTimeout(tapTimeout);
+                    toggleBlockSelection(block);
                 } else {
-                    // Single click: show modal after delay to check for double-click
-                    lastTappedBlock = block;
-                    lastTapTime = currentTime;
                     tapTimeout = setTimeout(() => {
-                        showModal(block);
-                        lastTappedBlock = null;
+                        if (!isDragging) showModal(block);
                     }, 300);
                 }
+                lastTapTime = currentTime;
+                lastTappedBlock = block;
+            } else {
+                showModal(block);
             }
-        });
-    });
-
-    // Close modals
-    document.querySelectorAll('.close-modal').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = button.closest('.modal');
-            closeModal(modal.id);
-        });
-    });
-
-    // Modal button listeners
-    document.getElementById('buildButton').addEventListener('click', handleBuild);
-    document.getElementById('controlsButton').addEventListener('click', showControlsModal);
-    document.getElementById('challengesButton').addEventListener('click', showChallengesModal);
-    document.getElementById('connectButton').addEventListener('click', showConnectModal);
-    document.getElementById('tutorialButton').addEventListener('click', showTutorialModal);
-
-    // Class buttons
-    [6, 7, 8, 9, 10, 11, 12].forEach(grade => {
-        document.getElementById(`class${grade}Button`).addEventListener('click', () => {
-            showClassModal(grade);
-        });
-    });
-
-    // Deep Dive button
-    document.getElementById('deepDiveButton').addEventListener('click', showDeepDive);
-
-    // Challenges
-    document.getElementById('runBeginnerChallenge').addEventListener('click', runBeginnerChallenge);
-    document.getElementById('runAdvancedChallenge').addEventListener('click', runAdvancedChallenge);
-
-    // Control buttons
-    document.getElementById('hoverBtn').addEventListener('click', () => sendCommand('hover'));
-    document.getElementById('forwardBtn').addEventListener('click', () => sendCommand('forward'));
-    document.getElementById('rotateLeftBtn').addEventListener('click', () => sendCommand('rotate_left'));
-    document.getElementById('rotateRightBtn').addEventListener('click', () => sendCommand('rotate_right'));
-
-    // Throttle slider
-    const throttleSlider = document.getElementById('throttleSlider');
-    const throttleValue = document.getElementById('throttleValue');
-    throttleSlider.addEventListener('input', () => {
-        throttleValue.textContent = throttleSlider.value;
-        sendCommand(`set_throttle:${throttleSlider.value / 100}`);
-    });
-
-    // Connect and Upload buttons
-    document.getElementById('connectDroneButton').addEventListener('click', () => {
-        const droneId = document.getElementById('droneId').value.trim();
-        const password = document.getElementById('dronePassword').value.trim();
-        const droneStatus = document.getElementById('droneStatus');
-        const connectionIndicator = document.getElementById('connectionIndicator');
-        const connectionStatus = document.getElementById('connectionStatus');
-
-        if (!droneId || password.length < 8) {
-            showBuildStatus('Invalid Drone ID or Password (minimum 8 characters)', true);
-            droneStatus.textContent = 'Status: Invalid credentials';
-            return;
         }
 
-        // Simulate connection
-        isConnected = Math.random() < 0.8;
-        if (isConnected) {
-            droneStatus.textContent = 'Status: Connected';
-            connectionIndicator.classList.remove('bg-red-500');
-            connectionIndicator.classList.add('bg-green-500');
-            connectionStatus.textContent = 'Connected';
-            showBuildStatus('Drone Connected');
-        } else {
-            droneStatus.textContent = 'Status: Disconnected';
-            connectionIndicator.classList.add('bg-red-500');
-            connectionStatus.textContent = 'Disconnected';
-            showBuildStatus('Connection Failed', true);
-        }
-
-        // Blink status
-        setTimeout(() => {
-            droneStatus.textContent = `Status: ${isConnected ? 'Connected' : 'Disconnected'}`;
-        }, 5000);
-    });
-
-    document.getElementById('uploadCodeButton').addEventListener('click', () => {
-        const uploadProgress = document.getElementById('uploadProgress');
-        const uploadStatus = document.getElementById('uploadStatus');
-
-        if (!isConnected) {
-            showBuildStatus('Drone not connected', true);
-            uploadStatus.textContent = 'Upload Status: Failed (Not Connected)';
-            return;
-        }
-
-        if (!isBuilt) {
-            showBuildStatus('No successful build to upload', true);
-            uploadStatus.textContent = 'Upload Status: Failed (No Build)';
-            return;
-        }
-
-        // Simulate upload
-        uploadStatus.textContent = 'Upload Status: Uploading...';
-        uploadProgress.value = 0;
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 20;
-            uploadProgress.value = progress;
-            if (progress >= 100) {
-                clearInterval(interval);
-                const isSuccess = Math.random() < 0.9;
-                if (isSuccess) {
-                    uploadStatus.textContent = 'Upload Status: Complete';
-                    showBuildStatus('Upload Complete');
-                } else {
-                    uploadStatus.textContent = 'Upload Status: Failed';
-                    showBuildStatus('Upload Failed', true);
-                }
-                // Reset after 5 seconds
-                setTimeout(() => {
-                    uploadStatus.textContent = 'Upload Status: None';
-                    uploadProgress.value = 0;
-                }, 5000);
+        function toggleBlockSelection(block) {
+            const index = selectedBlocks.indexOf(block);
+            if (index !== -1) {
+                selectedBlocks.splice(index, 1);
+                block.classList.remove('selected');
+            } else {
+                selectedBlocks.push(block);
+                block.classList.add('selected');
             }
-        }, 1000);
-    });
-
-    // Chapter modal submit solution
-    document.getElementById('submitSolution').addEventListener('click', submitSolution);
-}
-
-// Initialize the platform
-setupInteract();
-setupEventListeners();
-
-// Close modals when clicking outside
-document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal(modal.id);
+            updateArrows();
         }
-    });
-});
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                setupInteract();
+                setupBlockListeners();
+                setupControlListeners();
+                setupChallengeListeners();
+                setupConnectListeners();
+                setupClassListeners();
+
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = `
+                    @keyframes blink {
+                        0% { opacity: 1; }
+                        50% { opacity: 0; }
+                        100% { opacity: 1; }
+                    }
+                    progress::-webkit-progress-bar {
+                        background: rgba(0, 0, 0, 0.5);
+                        border-radius: 4px;
+                    }
+                    progress::-webkit-progress-value {
+                        background: var(--primary);
+                        border-radius: 4px;
+                    }
+                    progress::-moz-progress-bar {
+                        background: var(--primary);
+                        border-radius: 4px;
+                    }
+                `;
+                document.head.appendChild(styleSheet);
+            }, 1000);
+        });
     </script>
 </body>
 </html>
-
